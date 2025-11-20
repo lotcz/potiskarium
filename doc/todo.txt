@@ -5,3 +5,8 @@
 - payment
 - shipping
 - sending emails
+
+NEEDED INFO
+
+- obchodni adresa
+- DPH?
