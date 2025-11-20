@@ -1,0 +1,7 @@
+- slider menu with custom content
+- about page with custom content
+- product search
+- product detail
+- payment
+- shipping
+- sending emails

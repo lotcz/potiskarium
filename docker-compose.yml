@@ -6,6 +6,7 @@ services:
     container_name: potiskarium-php
     volumes:
       - ./src:/var/www/html
+      - ./docker/php-my.ini:/usr/local/etc/php/conf.d/php-my.ini
     working_dir: /var/www/html
     ports:
       - "9001:9000"
@@ -16,6 +17,7 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - db
+      - ftp
 
   db:
     image: mariadb:12.0.2-ubi10
@@ -30,6 +32,18 @@ services:
       - 3381:3306
     volumes:
       - ./docker/mysql/data/:/var/lib/mysql/
+
+  ftp:
+    image: delfer/alpine-ftp-server
+    container_name: potiskarium-ftp
+    volumes:
+      - ./src/wordpress:/var/www/html
+    environment:
+      - USERS=ftp1|ftp1234|/var/www/html
+      - ADDRESS=ftp
+    ports:
+      - "21:21"
+      - "21000-21010:21000-21010"
 
   nginx:
     image: nginx:alpine
