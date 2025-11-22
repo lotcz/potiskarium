@@ -1,12 +1,26 @@
+- moje-triko.cz
+
+FUNC
+
+- sending emails: email pri objednávce
+- payment: platby jen kartou
+  - https://www.comgate.cz/cz/registrace
+    - Merchant ID
+    - Secret (API key)
+    - Access to the client portal
+    - Test environment credentials (optional)
+- rozbalovací menu
 - slider menu with custom content
 - about page with custom content
-- product search
-- product detail
-- payment
-- shipping
-- sending emails
 
 NEEDED INFO
 
 - obchodni adresa
 - DPH?
+- https://www.comgate.cz/#poptavka-hp
+
+2.0
+
+- formulář na vlastní potisk,
+- všude upoutávky na vlastní potisk
+- registrace na Packeta.com (Zásilkovna) a PPL pro automatizaci (pluginy PPL CZ a Packeta)

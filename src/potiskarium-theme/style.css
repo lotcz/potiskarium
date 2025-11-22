@@ -1,0 +1,17 @@
+/*
+	Theme Name:   Potiskarium
+	Theme URI:    https://potiskarium.cz/potiskarium-theme
+	Description:  Téma pro Potiskárium
+	Author:       Karel
+	Author URI:   https://zavadil.eu
+	Template:     twentytwentyfour
+	Version:      1.0.0
+*/
+
+:root {
+	--brand-color: #4f3258;
+}
+
+.woocommerce-cart .wp-block-post-title {
+	max-width: var(--wp--style--global--wide-size) !important;
+}
