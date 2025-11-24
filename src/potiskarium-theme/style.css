@@ -15,3 +15,8 @@
 .woocommerce-cart .wp-block-post-title {
 	max-width: var(--wp--style--global--wide-size) !important;
 }
+
+header a:focus,
+header button:focus {
+	outline: none !important;
+}
