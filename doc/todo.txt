@@ -24,3 +24,12 @@ NEEDED INFO
 - formulář na vlastní potisk,
 - všude upoutávky na vlastní potisk
 - registrace na Packeta.com (Zásilkovna) a PPL pro automatizaci (pluginy PPL CZ a Packeta)
+
+
+WORDPRESS
+=========
+
+TEMPLATE (Layout of entire pages)
+  TEMPLATE PART (Reused section of a theme)
+    PATTERN (A saved layout made of blocks)
+      BLOCK (smallest element)

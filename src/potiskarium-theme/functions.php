@@ -22,3 +22,9 @@ function potiskarium_theme_scripts() {
 	//wp_enqueue_script('my-script', get_template_directory_uri() . '/js/script.js', [], false, true);
 }
 add_action('wp_enqueue_scripts', 'potiskarium_theme_scripts');
+
+/* custom blocks */
+add_action('init', function () {
+	register_block_type(__DIR__ . '/build/logo-block');
+});
+
