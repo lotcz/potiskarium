@@ -2,15 +2,17 @@
 	"apiVersion": 3,
 	"name": "potiskarium-theme/logo-block",
 	"title": "Potiskarium Logo",
-	"category": "media",
+	"category": "potiskarium-theme-blocks",
 	"icon": "format-image",
 	"description": "Simply the logo.",
-	"render": "file:./render.php",
 	"editorScript": "file:./editor.js",
 	"attributes": {
 		"variant": {
 			"type": "string",
 			"default": "white"
 		}
+	},
+	"supports": {
+		"html": false
 	}
 }
