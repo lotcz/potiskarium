@@ -4,12 +4,15 @@
 	"title": "Potiskarium Logo",
 	"category": "potiskarium-theme-blocks",
 	"icon": "format-image",
-	"description": "Simply the logo.",
 	"editorScript": "file:./editor.js",
 	"attributes": {
 		"variant": {
 			"type": "string",
 			"default": "white"
+		},
+		"maxHeight": {
+			"type": "number",
+			"default": 200
 		}
 	},
 	"supports": {

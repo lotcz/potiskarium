@@ -5,13 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "wp-scripts build --webpack-copy-php",
-    "start": "wp-scripts start --webpack-copy-php"
+	"start": "cross-env NODE_ENV=development wp-scripts start --webpack-copy-php"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@wordpress/scripts": "^31.0.0"
+    "@wordpress/scripts": "^31.0.0",
+    "cross-env": "^10.1.0"
   }
 }
