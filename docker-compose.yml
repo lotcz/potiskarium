@@ -1,23 +1,4 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: potiskarium-php
-    volumes:
-      - ./src/wordpress:/var/www/html
-      - ./docker/php-my.ini:/usr/local/etc/php/conf.d/php-my.ini
-    working_dir: /var/www/html
-    ports:
-      - "9001:9000"
-      - "9004:9003"
-    environment:
-      XDEBUG_CONFIG: "client_host=host.docker.internal"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - db
-      - ftp
 
   db:
     image: mariadb:12.0.2-ubi10
@@ -49,9 +30,36 @@ services:
     image: nginx:alpine
     container_name: potiskarium-nginx
     volumes:
-      - ./src/wordpress:/var/www/html
+      - ./src/:/var/www/
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     depends_on:
       - app
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: potiskarium-php
+    volumes:
+      - ./src/:/var/www/
+      - ./docker/php-my.ini:/usr/local/etc/php/conf.d/php-my.ini
+    working_dir: /var/www/wordpress
+    entrypoint: >
+      sh -c "
+        ln -sfn /var/www/comgate-plugin /var/www/wordpress/wp-content/plugins/comgate-plugin &&
+        ln -sfn /var/www/potiskarium-construction /var/www/wordpress/wp-content/themes/potiskarium-construction &&
+        ln -sfn /var/www/potiskarium-theme /var/www/wordpress/wp-content/themes/potiskarium-theme &&
+        php-fpm
+      "
+    ports:
+      - "9001:9000"
+      - "9004:9003"
+    environment:
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - db
+      - ftp

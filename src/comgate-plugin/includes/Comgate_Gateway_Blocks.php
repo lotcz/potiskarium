@@ -28,7 +28,7 @@ class Comgate_Gateway_Blocks extends AbstractPaymentMethodType {
 				'wc-blocks-registry',
 				'wc-settings',
 			],
-			'1.3',
+			'1.4',
 			true
 		);
 
