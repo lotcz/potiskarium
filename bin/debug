@@ -1,0 +1,3 @@
+# run this inside WSL
+docker compose up -d
+rsync -avz /mnt/c/develop/potiskarium/src/wordpress /home/karel/develop/potiskarium/src/wordpress

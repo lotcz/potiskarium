@@ -1,0 +1,1 @@
+rsync -avz --delete "/mnt/c/develop/potiskarium/src/comgate-plugin/" "/home/karel/develop/potiskarium/src/wordpress/wp-content/plugins/comgate-plugin/"
