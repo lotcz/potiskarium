@@ -17,11 +17,11 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 	public $verify_url;
 
 	public function __construct() {
-		$this->id                 = 'comgate_simple';
+		$this->id                 = 'karel_comgate_plugin_payment';
 		$this->icon               = ''; // URL to an icon
 		$this->has_fields         = false;
-		$this->method_title       = __( 'ComGate (Simple)', 'wc-comgate-simple' );
-		$this->method_description = __( 'Simple ComGate-style gateway — configurable endpoints. Now compatible with WooCommerce Cart & Checkout Blocks.', 'wc-comgate-simple' );
+		$this->method_title       = __( 'ComGate Gateway', 'karel' );
+		$this->method_description = __( 'Simple ComGate gateway.', 'karel' );
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -40,10 +40,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 
 		// hooks
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-		add_action( 'woocommerce_api_wc_comgate_simple_callback', array( $this, 'handle_callback' ) );
-
-		// enqueue block integration script on frontend checkout
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_block_integration' ) );
+		add_action( 'woocommerce_api_' . $this->id, array( $this, 'handle_callback' ) );
 
 		// register REST endpoints for blocks to call
 		add_action( 'rest_api_init', array( $this, 'register_rest_endpoints' ) );
@@ -105,31 +102,6 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		echo '<table class="form-table">';
 		$this->generate_settings_html();
 		echo '</table>';
-	}
-
-	public function enqueue_block_integration() {
-		/*
-		wp_register_script(
-			'wc-comgate-blocks',
-			plugins_url( 'blocks.js', __FILE__ ),
-			array( 'wp-element', 'wp-i18n', 'wc-checkout', 'wc-blocks-registry' ), // fallback dependencies
-			'1.0',
-			true
-		);
-*/
-		$data = array(
-			'gatewayId'   => $this->id,
-			'title'       => $this->title,
-			'description' => $this->description,
-			'restUrl'     => rest_url( 'wc-comgate/v1' ),
-			'nonce'       => wp_create_nonce( 'wp_rest' ),
-			'enabled'     => ( $this->enabled === 'yes' ),
-		);
-
-		wp_localize_script( 'comgate_blocks', 'wc_comgate_simple_params', $data );
-
-		// důležité: připojíme skript na checkout page
-		wp_enqueue_script( 'comgate_blocks' );
 	}
 
 	public function register_rest_endpoints() {

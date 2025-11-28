@@ -14,13 +14,15 @@ const Edit = createElement(
 );
 
 registerPaymentMethod({
-	name: 'comgate_simple',
+	name: 'karel_comgate_plugin_payment',
 	label: 'ComGate – Platba kartou',
 	ariaLabel: 'ComGate – Platba kartou',
 
 	canMakePayment: () => true,
 
-	// MUST BE: React element (NOT a function)
 	content: Content,
 	edit: Edit,
+	supports: {
+		features: ['products']
+	}
 });
