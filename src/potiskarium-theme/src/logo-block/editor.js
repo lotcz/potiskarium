@@ -13,10 +13,6 @@ function potiskariumLogoUrl(variant) {
 }
 
 function potiskariumLogoStyle(maxHeight) {
-	if (!maxHeight) {
-		maxHeight = 200;
-	}
-
 	return {maxHeight: maxHeight};
 }
 
@@ -52,13 +48,13 @@ registerBlockType( 'potiskarium-theme/logo-block', {
 							required={false}
 							onChange={ onMaxHeightChange }
 							units={[
-								{ value: 'px', label: 'px' }
+								{ value: 'px' }
 							]}
 						/>
 					</div>
 				</InspectorControls>
 
-				<div { ...blockProps }>
+				<div {...blockProps }>
 					<img
 						src={potiskariumLogoUrl(variant)}
 						alt="potiskarium-logo"
@@ -72,12 +68,14 @@ registerBlockType( 'potiskarium-theme/logo-block', {
 		const blockProps = useBlockProps.save();
 		const { variant, maxHeight } = attributes;
 
-		return <div { ...blockProps }>
-			<img
-				src={potiskariumLogoUrl(variant)}
-				alt="Potiskarium"
-				style={potiskariumLogoStyle(maxHeight)}
-			/>
+		return <div {...blockProps}>
+			<a href="/">
+				<img
+					src={potiskariumLogoUrl(variant)}
+					alt="Potiskarium"
+					style={potiskariumLogoStyle(maxHeight)}
+				/>
+			</a>
 		</div>;
 	},
 } );

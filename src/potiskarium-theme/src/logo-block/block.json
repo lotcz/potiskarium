@@ -8,11 +8,11 @@
 	"attributes": {
 		"variant": {
 			"type": "string",
-			"default": "white"
+			"default": "logo-white"
 		},
 		"maxHeight": {
-			"type": "number",
-			"default": 200
+			"type": "string",
+			"default": "100px"
 		}
 	},
 	"supports": {
