@@ -3,16 +3,16 @@
  * ComGate Mock Payment Page
  * simulates ComGate payment flow in test mode
  */
-
-/**
- * Display mock payment page
- */
 function comgate_show_mock_payment_page() {
 	$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
-	$trans_id = isset($_GET['trans_id']) ? sanitize_text_field($_GET['trans_id']) : '';
+	$return_url = isset($_GET['return_url']) ? sanitize_text_field($_GET['return_url']) : '';
 
-	if (!$order_id || !$trans_id) {
-		wp_die('Invalid payment parameters');
+	if (!$order_id) {
+		wp_die('Missing order ID.');
+	}
+
+	if (!$return_url) {
+		wp_die('Missing return URL.');
 	}
 
 	$order = wc_get_order($order_id);
@@ -191,10 +191,6 @@ function comgate_show_mock_payment_page() {
 					<span class="info-value">#<?php echo $order->get_order_number(); ?></span>
 				</div>
 				<div class="info-row">
-					<span class="info-label">Transaction ID:</span>
-					<span class="info-value"><?php echo esc_html($trans_id); ?></span>
-				</div>
-				<div class="info-row">
 					<span class="info-label">Customer:</span>
 					<span class="info-value"><?php echo esc_html($order->get_billing_first_name() . ' ' . $order->get_billing_last_name()); ?></span>
 				</div>
@@ -240,11 +236,10 @@ function comgate_show_mock_payment_page() {
 			// Simulate processing delay
 			setTimeout(function() {
 				const form = document.createElement('form');
-				form.method = 'POST';
-				form.action = '<?php echo home_url('/comgate-mock-callback/'); ?>';
+				form.method = 'GET';
+				form.action = '<?php echo $return_url ?>';
 
 				const fields = {
-					'transId': '<?php echo esc_js($trans_id); ?>',
 					'refId': '<?php echo esc_js($order_id); ?>',
 					'status': status
 				};
