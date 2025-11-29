@@ -1,0 +1,9 @@
+{
+	"apiVersion": 3,
+	"name": "comgate-plugin/payment-gateway-block",
+	"title": "ComGate Gateway",
+	"category": "potiskarium-theme-blocks",
+	"icon": "format-image",
+	"description": "Custom payment method for checkout",
+	"editorScript": "file:./block.js"
+}

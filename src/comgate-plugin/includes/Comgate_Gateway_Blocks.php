@@ -21,14 +21,14 @@ class Comgate_Gateway_Blocks extends AbstractPaymentMethodType {
 	public function get_payment_method_script_handles() {
 		wp_register_script(
 			'karel_comgate_plugin_blocks',
-			plugins_url( '/blocks.js', __FILE__ ),
+			plugins_url( '../build/payment-gateway-block/block.js', __FILE__ ),
 			[
 				'wp-element',
 				'wp-i18n',
 				'wc-blocks-registry',
 				'wc-settings',
 			],
-			'1.4',
+			'2.0',
 			true
 		);
 
