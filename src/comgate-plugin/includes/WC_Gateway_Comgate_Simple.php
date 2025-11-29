@@ -14,6 +14,8 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 
 	public $api_url;
 
+	public $redirect_url;
+
 	public function __construct() {
 		$this->id                 = 'karel_comgate_plugin_payment';
 		$this->icon               = ''; // URL to an icon
@@ -34,10 +36,8 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$this->secret       = $this->get_option( 'secret' );
 		$this->test_mode    = 'yes' === $this->get_option( 'test_mode' );
 
-		// expose enabled flag so blocks can see it
 		$this->enabled      = $this->get_option( 'enabled' );
 
-		// API endpoints
 		$this->api_url = 'https://payments.comgate.cz/v1.0/create';
 
 		// mark that this gateway supports basic features
@@ -51,6 +51,28 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		// Add REST API support for Blocks
 		add_action('woocommerce_rest_checkout_process_payment_with_context', array($this, 'process_payment_for_blocks'), 10, 2);
 
+		// TEST MODE
+		if ($this->test_mode) {
+			add_filter( 'query_vars', function( $vars ) {
+				$vars[] = 'comgate_mock_page';
+				return $vars;
+			});
+
+			add_action( 'template_redirect', function () {
+				if ( get_query_var( 'comgate_mock_page' ) ) {
+					comgate_show_mock_payment_page();
+					exit;
+				}
+			});
+
+			$this->api_url = get_rest_url(null, 'comgate-mock-api');
+		}
+	}
+
+	public function get_redirect_url($orderId, $transId) {
+		return $this->test_mode ?
+			get_site_url(null, 'comgate-mock-page') . '?trans_id=' . $transId . '&order_id=' . $orderId
+			: 'https://payments.comgate.cz/client/instructions/index?id=' . $transId;
 	}
 
 	public function init_form_fields() {
@@ -185,7 +207,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 			}
 
 			// Redirect to ComGate payment page
-			$payment_url = 'https://payments.comgate.cz/client/instructions/index?id=' . $response['transId'];
+			$payment_url = $this->get_redirect_url($order_id, $response['transId']);
 
 			if ($this->test_mode) {
 				error_log('ComGate Redirect URL: ' . $payment_url);

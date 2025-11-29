@@ -55,3 +55,27 @@ function karel_comgate_plugin_activate_block() {
 }
 
 add_action('woocommerce_blocks_loaded', 'karel_comgate_plugin_activate_block');
+
+// MOCK PAGE
+include __DIR__ . '/includes/comgate-mock-page.php';
+
+function karel_comgate_plugin_register_mock_page() {
+	add_rewrite_rule(
+		'^comgate-mock-page/?$',
+		'index.php?comgate_mock_page=1',
+		'top'
+	);
+}
+
+add_action('init', function() {
+	karel_comgate_plugin_register_mock_page();
+});
+
+register_activation_hook(__FILE__, function() {
+	karel_comgate_plugin_register_mock_page();
+	flush_rewrite_rules();
+});
+
+register_deactivation_hook(__FILE__, function() {
+	flush_rewrite_rules();
+});
