@@ -44,6 +44,7 @@ services:
     container_name: potiskarium-php
     volumes:
       - ./src/:/var/www/
+      - ./logs/:/var/log/wordpress
       - ./docker/php-my.ini:/usr/local/etc/php/conf.d/php-my.ini
     working_dir: /var/www/wordpress
     entrypoint: >
@@ -51,6 +52,7 @@ services:
         ln -sfn /var/www/comgate-plugin /var/www/wordpress/wp-content/plugins/comgate-plugin &&
         ln -sfn /var/www/potiskarium-construction /var/www/wordpress/wp-content/themes/potiskarium-construction &&
         ln -sfn /var/www/potiskarium-theme /var/www/wordpress/wp-content/themes/potiskarium-theme &&
+        ln -sf /var/log/wordpress/debug.log /var/www/wordpress/wp-content/debug.log &&
         php-fpm
       "
     ports:
