@@ -1,0 +1,15 @@
+{
+	"apiVersion": 3,
+	"name": "potiskarium-theme/categories-menu-block",
+	"title": "Horizontal Categories Menu",
+	"category": "potiskarium-theme-blocks",
+	"icon": "list-view",
+	"editorScript": "file:./editor.js",
+	"attributes": {
+
+	},
+	"supports": {
+		"html": false
+	},
+	"render": "file:./index.php"
+}

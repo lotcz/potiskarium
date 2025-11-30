@@ -5,11 +5,12 @@
 	Author:       Karel
 	Author URI:   https://zavadil.eu
 	Template:     twentytwentyfour
-	Version:      1.1.0
+	Version:      1.3.0
 */
 
 :root {
 	--brand-color: #4f3258;
+	--secondary-brand-color: #945fa5;
 }
 
 .woocommerce-cart .wp-block-post-title {
@@ -20,3 +21,34 @@ a:focus,
 button:focus {
 	outline: none !important;
 }
+
+.background-brand-secondary {
+	background-color: var(--secondary-brand-color);
+}
+
+.background-brand-secondary a {
+	color: white;
+}
+
+.product-categories-menu {
+	margin: 0 !important;
+	padding: 5px !important;
+}
+
+.product-categories-menu ul.product-categories-list {
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style-type: none;
+	display: flex;
+	gap: 1rem;
+}
+
+.product-categories-menu li.product-category-item a {
+	text-decoration: none;
+	padding: 2px !important;
+}
+
+.product-categories-menu li.product-category-item a:hover {
+	text-decoration: underline;
+}
+
