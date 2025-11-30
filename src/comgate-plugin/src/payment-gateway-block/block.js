@@ -5,44 +5,49 @@ const { useState } = wp.element;
 
 // Get settings from PHP
 const settings = getSetting('karel_comgate_plugin_payment_data', {});
-const defaultLabel = decodeEntities(settings.title) || 'ComGate Gateway';
-const description = decodeEntities(settings.description) || 'Pay securely with ComGate card payment.';
+const defaultLabel = decodeEntities(settings.title) || 'Online Payment';
+const description = decodeEntities(settings.description) || 'You will be redirected to a secure payment gateway to complete the payment.';
+
+const imagesUrl = KarelComgatePluginData.pluginUrl + 'img/';
 
 const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 	const [isProcessing, setIsProcessing] = useState(false);
 	const { onPaymentSetup } = eventRegistration;
 
 	// Register payment processing
-	useState(() => {
-		const unsubscribe = onPaymentSetup(async () => {
-			setIsProcessing(true);
+	useState(
+		() => onPaymentSetup(
+			async () => {
+				setIsProcessing(true);
 
-			return {
-				type: emitResponse.responseTypes.SUCCESS,
-				meta: {
-					paymentMethodData: {
-						payment_method: 'karel_comgate_plugin_payment'
+				return {
+					type: emitResponse.responseTypes.SUCCESS,
+					meta: {
+						paymentMethodData: {
+							payment_method: 'karel_comgate_plugin_payment'
+						}
 					}
-				}
-			};
-		});
-
-		return unsubscribe;
-	}, [onPaymentSetup, emitResponse]);
+				};
+			}
+		),
+		[onPaymentSetup, emitResponse]
+	);
 
 	return (
-		<div className="comgate-payment-method">
+		<div>
+			<div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+				<img src={imagesUrl + 'visa.png'} alt="VISA"/>
+				<img src={imagesUrl + 'maestro.png'} alt="Maestro"/>
+				<img src={imagesUrl + 'mastercard.png'} alt="Mastercard"/>
+				<img src={imagesUrl + 'apple-pay.png'} alt="Apple Pay"/>
+				<img src={imagesUrl + 'google-pay.png'} alt="Google Pay"/>
+			</div>
 			<p>{description}</p>
 			{isProcessing && (
 				<div className="comgate-processing">
 					<span>Preparing payment...</span>
 				</div>
 			)}
-			<div className="comgate-payment-icons">
-				<span className="payment-icon">💳 Visa</span>
-				<span className="payment-icon">💳 Mastercard</span>
-				<span className="payment-icon">💳 Maestro</span>
-			</div>
 		</div>
 	);
 };

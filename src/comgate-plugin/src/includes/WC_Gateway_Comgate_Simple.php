@@ -1,49 +1,56 @@
 <?php
 
+namespace src\includes;
+use WC_Order;
+use WC_Payment_Gateway;
+use WP_REST_Request;
+use WP_REST_Response;
+
 if (!defined('ABSPATH')) {
 	exit;
 }
 
 class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 
-	public $merchant_id;
+	private $debug_mode = true;
 
-	public $secret;
+	private $use_mock_page;
 
-	public $authorization_header;
+	private $test_payments;
 
-	public $test_mode;
+	private $merchant_id;
 
-	public $test_payments;
+	private $secret;
+
+	private $authorization_header;
 
 	/**
 	 * External system will notify this internal endpoint
 	 */
-	public $notify_url;
+	private $notify_url;
 
 	public function __construct() {
 		$this->id = 'karel_comgate_plugin_payment';
 		$this->icon = ''; // URL to an icon
 		$this->has_fields = false;
-		$this->method_title = __('ComGate Gateway', 'karel');
-		$this->method_description = __('Simple ComGate gateway.', 'karel');
-		$this->order_button_text = __('Proceed to ComGate', 'karel');
+		$this->method_title = __('ComGate Gateway', 'comgate-plugin');
+		$this->method_description = __('Simple ComGate gateway by Karel.', 'comgate-plugin');
+		$this->order_button_text = __('Proceed to payment', 'comgate-plugin');
 		$this->title = $this->get_option('title');
 		$this->description = $this->get_option('description');
 		$this->merchant_id = $this->get_option('merchant_id');
 		$this->secret = $this->get_option('secret');
 		$this->authorization_header = 'Basic ' . base64_encode($this->merchant_id . ':' . $this->secret);
-		$this->test_mode = 'yes' === $this->get_option('test_mode');
+		$this->use_mock_page = 'yes' === $this->get_option('use_mock_page');
 		$this->test_payments = 'yes' === $this->get_option('test_payments');
 		$this->enabled = $this->get_option('enabled');
 		$this->supports = array('products');
-
-		$this->notify_url = rest_url('karel-comgate/v1/notify');
+		$this->notify_url = rest_url('karel-comgate/v2/notify');
 
 		$this->init_form_fields();
 
 		add_action('rest_api_init', function () {
-			register_rest_route('karel-comgate/v1', 'notify', [
+			register_rest_route('karel-comgate/v2', 'notify', [
 				'methods' => 'POST',
 				'callback' => array($this, 'handle_comgate_notification'),
 				'permission_callback' => '__return_true'
@@ -54,33 +61,33 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
 		add_action('woocommerce_rest_checkout_process_payment_with_context', array($this, 'process_payment_for_blocks'), 10, 2);
 
-		// TEST MODE
-		if ($this->test_mode) {
-			add_filter('query_vars', function( $vars ) {
+		// MOCK PAGE
+		if ($this->use_mock_page) {
+			add_filter('query_vars', function ($vars) {
 				$vars[] = 'comgate_mock_page';
 				return $vars;
 			});
 
 			add_action('template_redirect', function () {
-				if ( get_query_var('comgate_mock_page')) {
+				if (get_query_var('comgate_mock_page')) {
 					comgate_show_mock_payment_page();
 					exit;
 				}
 			});
 
 			add_action('rest_api_init', function () {
-				register_rest_route('comgate-mock-api/v1', 'create', [
-					'methods'  => 'POST',
+				register_rest_route('comgate-mock-api/v2', 'create', [
+					'methods' => 'POST',
 					'callback' => array($this, 'handle_mock_api_request_create'),
 					'permission_callback' => '__return_true'
 				]);
-				register_rest_route('comgate-mock-api/v1', 'status', [
-					'methods'  => 'GET',
+				register_rest_route('comgate-mock-api/v2', 'status', [
+					'methods' => 'GET',
 					'callback' => array($this, 'handle_mock_api_request_status'),
 					'permission_callback' => '__return_true'
 				]);
-				register_rest_route('comgate-mock-api/v1', 'setstate', [
-					'methods'  => 'POST',
+				register_rest_route('comgate-mock-api/v2', 'setstate', [
+					'methods' => 'POST',
 					'callback' => array($this, 'handle_mock_api_request_setstate'),
 					'permission_callback' => '__return_true'
 				]);
@@ -91,53 +98,68 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 	public function init_form_fields() {
 		$this->form_fields = array(
 			'enabled' => array(
-				'title'   => __('Enable/Disable', 'karel'),
-				'type'    => 'checkbox',
-				'label'   => __('Enable ComGate (Simple) Gateway', 'karel'),
+				'title' => __('Enable/Disable', 'karel'),
+				'type' => 'checkbox',
+				'label' => __('Enable ComGate Gateway', 'karel'),
 				'default' => 'yes'
 			),
-			'title' => array(
-				'title'       => __('Title', 'karel'),
-				'type'        => 'text',
-				'description' => __('This controls the title which the user sees during checkout.', 'karel'),
-				'default'     => __('Card payment (ComGate)', 'karel'),
-				'desc_tip'    => true,
-			),
-			'description' => array(
-				'title'       => __('Description', 'karel'),
-				'type'        => 'textarea',
-				'default'     => __('You will be redirected to a secure payment gateway to complete the payment.', 'karel'),
-			),
-			'merchant_id' => array(
-				'title'       => __('Merchant ID', 'karel'),
-				'type'        => 'text',
-			),
-			'secret' => array(
-				'title'       => __('Secret / API key', 'karel'),
-				'type'        => 'text',
-			),
-			'test_mode' => array(
-				'title'       => __('Mock payment page', 'karel'),
-				'type'        => 'checkbox',
-				'label'       => __('Enable mock payment page', 'karel'),
-				'default'     => 'yes',
+			'use_mock_page' => array(
+				'title' => __('Use mock payment page', 'karel'),
+				'type' => 'checkbox',
+				'label' => __('Enable mock payment page', 'karel'),
+				'description' => __('Instead of redirecting to ComGate, you will be redirected to testing page.', 'karel'),
+				'default' => 'yes',
 			),
 			'test_payments' => array(
-				'title'       => __('Test payments', 'karel'),
-				'type'        => 'checkbox',
-				'label'       => __('Send test payments', 'karel'),
-				'default'     => 'yes',
+				'title' => __('Test payments', 'karel'),
+				'type' => 'checkbox',
+				'label' => __('Send test payments', 'karel'),
+				'description' => __('Payments will be sent to ComGate, but marked as test payments.', 'karel'),
+				'default' => 'yes',
+			),
+			'title' => array(
+				'title' => __('Title', 'karel'),
+				'type' => 'text',
+				'description' => __('This controls the title which the user sees during checkout.', 'karel'),
+				'default' => __('Online payment', 'karel'),
+			),
+			'description' => array(
+				'title' => __('Description', 'karel'),
+				'type' => 'textarea',
+				'default' => __('You will be redirected to a secure payment gateway to complete the payment.', 'karel'),
+			),
+			'merchant_id' => array(
+				'title' => __('Merchant ID', 'karel'),
+				'type' => 'text',
+			),
+			'secret' => array(
+				'title' => __('Secret / API key', 'karel'),
+				'type' => 'text',
 			)
 		);
 	}
 
 	public function admin_options() {
-		echo '<h2>' . esc_html($this->get_method_title()) . '</h2>';
-		echo wp_kses_post(wpautop( $this->get_method_description()));
-		echo '<table class="form-table">';
-		$this->generate_settings_html();
-		echo '</table>';
-		echo "<div><strong>Notify URL:</strong> $this->notify_url</div>";
+		?>
+			<h2><?php echo esc_html($this->get_method_title()) ?></h2>
+			<?php echo wp_kses_post(wpautop($this->get_method_description())) ?>
+			<table class="form-table">
+				<?php echo $this->generate_settings_html()?>
+				<tr valign="top">
+					<th scope="row" class="titledesc">
+						<label for="notify-url">Notify URL</label>
+					</th>
+					<td class="forminp">
+						<fieldset>
+							<legend class="screen-reader-text"><span>Notify URL</span></legend>
+							<div><?php echo $this->notify_url ?></div>
+							<p class="description">This should be configured in ComGate administration as push notification endpoint.</p>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+
+		<?php
 	}
 
 	/**
@@ -185,16 +207,15 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$transId = $order->get_meta('_comgate_transaction_id');
 
 		if (empty($transId)) {
-			error_log("Check order status: ComGate transaction id not set on order");
+			error_log("Check order status: ComGate transaction id not set on order!");
+			return;
 		}
 
-		$api_url = $this->test_mode ? rest_url('comgate-mock-api/v1/status') : 'https://payments.comgate.cz/v2.0/status';
+		$api_url = $this->use_mock_page ? rest_url('comgate-mock-api/v2/status') : 'https://payments.comgate.cz/v2.0/status';
 		$api_url = add_query_arg(array('transId' => $transId), $api_url);
 
-		// Log for debugging
-		if ($this->test_mode) {
-			error_log('ComGate Status URL: ' . $api_url);
-			error_log('ComGate Transaction ID: ' . $transId);
+		if ($this->debug_mode) {
+			error_log('Check order status URL: ' . $api_url);
 		}
 
 		// Check status
@@ -207,13 +228,14 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 					'Accept' => 'application/json',
 					'Authorization' => $this->authorization_header
 				),
-				'sslverify' => !$this->test_mode
+				'sslverify' => !$this->use_mock_page
 			)
 		);
 
 		if (is_wp_error($response)) {
 			$error_message = 'ComGate API error: ' . $response->get_error_message();
 			error_log($error_message);
+			return;
 		}
 
 		$error_messages = [];
@@ -222,8 +244,9 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$data = json_decode($body, true);
 
 		if (json_last_error() !== JSON_ERROR_NONE) {
-			$error_message = "Invalid JSON returned by API: $body";
+			$error_message = "Invalid JSON returned by ComGate API: $body";
 			error_log($error_message);
+			return;
 		}
 
 		if (!isset($data['code'])) {
@@ -257,11 +280,12 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 
 		if (!empty($error_messages)) {
 			if (!empty($data['message'])) {
-				$error_messages[] = 'ComGate message:' . $data['message'];
+				$error_messages[] = 'ComGate API message:' . $data['message'];
 			}
-			$error_message = join(" ", $error_messages);
+			$error_message = join("\r\n", $error_messages);
+			$error_message = "Check order status error(s):\r\n$error_message";
 			error_log($error_message);
-			$order->add_order_note('ComGate API error: ' . $error_message);
+			$order->add_order_note(wpautop($error_message));
 			return;
 		}
 
@@ -270,7 +294,9 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$originalStatus = $order->get_meta('_comgate_transaction_status');
 
 		if ($originalStatus === $data['status']) {
-			error_log("ComGate transaction status is already set to '{$data['status']}'");
+			if ($this->debug_mode) {
+				error_log("ComGate transaction status is already set to '{$data['status']}'");
+			}
 			return;
 		}
 
@@ -328,12 +354,11 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 			'url_pending' => $return_url
 		);
 
-		$api_url = $this->test_mode ? rest_url('comgate-mock-api/v1/create') : 'https://payments.comgate.cz/v2.0/payment.json';
+		$api_url = $this->use_mock_page ? rest_url('comgate-mock-api/v2/create') : 'https://payments.comgate.cz/v2.0/payment.json';
 
-		// Log for debugging
-		if ($this->test_mode) {
-			error_log('ComGate Payment URL: ' . $api_url);
-			error_log('ComGate Payment Data: ' . print_r($payment_data, true));
+		if ($this->debug_mode) {
+			$data_log = print_r($payment_data, true);
+			error_log("ComGate Payment:\r\nURL: $api_url\r\nData: $data_log");
 		}
 
 		// Create payment
@@ -348,7 +373,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 					'Accept' => 'application/json',
 					'Authorization' => $this->authorization_header
 				),
-				'sslverify' => !$this->test_mode
+				'sslverify' => !$this->use_mock_page
 			)
 		);
 
@@ -396,9 +421,10 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 			if (!empty($data['message'])) {
 				$error_messages[] = 'ComGate message:' . $data['message'];
 			}
-			$error_message = join(" ", $error_messages);
+			$error_message = join("\r\n", $error_messages);
+			$error_message = "ComGate API error: $error_message";
 			error_log($error_message);
-			$order->add_order_note('ComGate API error: ' . $error_message);
+			$order->add_order_note(wpautop($error_message));
 			return array(
 				'result' => 'failure',
 				'messages' => $error_message
@@ -417,10 +443,9 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 			WC()->cart->empty_cart();
 		}
 
-		// Redirect to ComGate payment page
 		$payment_url = $data['redirect'];
 
-		if ($this->test_mode) {
+		if ($this->debug_mode) {
 			error_log('ComGate Redirect URL: ' . $payment_url);
 		}
 
@@ -434,7 +459,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 	 * Process ComGate notification call
 	 */
 	public function handle_comgate_notification(WP_REST_Request $request) {
-		if ($this->test_mode) {
+		if ($this->debug_mode) {
 			error_log('ComGate notification received: ' . print_r($request->get_body(), true));
 		}
 
@@ -442,29 +467,24 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$ref_id = $request->get_param('refId');
 
 		if (!$transaction_id || !$ref_id) {
-			status_header(400);
-			die('Invalid ComGate response');
+			return new WP_REST_Response('Invalid ComGate response', 400);
 		}
 
 		$order = wc_get_order($ref_id);
 
 		if (!$order) {
-			status_header(404);
-			die('Order not found');
+			return new WP_REST_Response('Order not found', 404);
 		}
 
 		// Verify the transaction ID matches
 		$stored_transaction_id = $order->get_meta('_comgate_transaction_id');
 		if ($stored_transaction_id !== $transaction_id) {
-			status_header(400);
-			die('Transaction ID mismatch');
+			return new WP_REST_Response('Transaction ID mismatch', 400);
 		}
 
 		$this->check_order_status($order);
 
-		status_header(200);
-		echo 'OK';
-		exit;
+		return new WP_REST_Response('OK', 200);
 	}
 
 	/**
@@ -485,17 +505,19 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$transaction_status = $order->get_meta('_comgate_transaction_status');
 
 		if ($transaction_id) {
-			echo '<div class="woocommerce-order-details">';
-			echo '<h2 class="woocommerce-order-details__title">' . __('Payment Details', 'woocommerce') . '</h2>';
-			echo '<p><strong>' . __('Transaction ID:', 'woocommerce') . '</strong> ' . esc_html($transaction_id) . '</p>';
-			echo '<p><strong>' . __('Transaction Status:', 'woocommerce') . '</strong> ' . esc_html($transaction_status) . '</p>';
-
-			if ($this->test_mode) {
-				$transaction_mock_status = $order->get_meta('_comgate_transaction_mock_status');
-				echo '<p><strong>' . __('Transaction Mock Status:', 'woocommerce') . '</strong> ' . esc_html($transaction_mock_status) . '</p>';
-			}
-
-			echo '</div>';
+			?>
+			<div class="woocommerce-order-details">
+				<h2 class="woocommerce-order-details__title"><?php echo __('Payment Details', 'comgate-plugin') ?></h2>
+				<p><strong><?php echo __('Transaction ID:', 'comgate-plugin') ?></strong> <?php echo esc_html($transaction_id) ?></p>
+				<p><strong><?php echo __('Transaction Status:', 'comgate-plugin') ?></strong> <?php echo __($transaction_status, 'comgate-plugin') ?></p>
+				<?php
+				if ($this->use_mock_page) {
+					$transaction_mock_status = $order->get_meta('_comgate_transaction_mock_status');
+					echo '<p><strong>' . __('Transaction Mock Status:', 'comgate-plugin') . '</strong> ' . esc_html($transaction_mock_status) . '</p>';
+				}
+				?>
+			</div>
+			<?php
 		}
 	}
 
@@ -509,7 +531,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 			'transId' => $orderId,
 		];
 
-    	return new WP_REST_Response($result, 200);
+		return new WP_REST_Response($result, 200);
 	}
 
 	public function handle_mock_api_request_status() {

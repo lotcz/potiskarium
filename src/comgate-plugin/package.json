@@ -1,7 +1,6 @@
 {
 	"name": "comgate-plugin",
-	"version": "1.0.0",
-	"main": "blocks.js",
+	"version": "2.0.0",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "wp-scripts build --webpack-copy-php",

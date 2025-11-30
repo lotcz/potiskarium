@@ -1,17 +1,11 @@
-- moje-triko.cz
-
 FUNC
 
-- sending emails: email pri objednávce
-- payment: platby jen kartou
-  - https://www.comgate.cz/cz/registrace
-    - Merchant ID
-    - Secret (API key)
-    - Access to the client portal
-    - Test environment credentials (optional)
+- test prod comgate
+- style comgate
 - rozbalovací menu
 - slider menu with custom content
 - about page with custom content
+- style after moje-triko.cz
 
 NEEDED INFO
 

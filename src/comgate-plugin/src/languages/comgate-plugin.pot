@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: comgate-plugin\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Domain: comgate-plugin\n"
+
+msgid "Simple ComGate gateway by Karel."
+msgstr ""
+
+msgid "Online payment"
+msgstr ""
+
+msgid "You will be redirected to a secure payment gateway to complete the payment."
+msgstr ""
+
+msgid "Proceed to payment"
+msgstr ""
+
+msgid "Payment Details"
+msgstr ""
+
+msgid "Transaction ID:"
+msgstr ""
+
+msgid "Transaction Status:"
+msgstr ""
+
+msgid "PENDING"
+msgstr ""
+
+msgid "AUTHORIZED"
+msgstr ""
+
+msgid "CANCELLED"
+msgstr ""
+
+msgid "PAID"
+msgstr ""

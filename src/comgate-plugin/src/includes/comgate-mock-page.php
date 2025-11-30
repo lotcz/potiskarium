@@ -20,8 +20,8 @@ function comgate_show_mock_payment_page() {
 		wp_die('Order not found');
 	}
 
-	$setStatusUrl = rest_url('comgate-mock-api/v1/setstate');
-	$notifyUrl = rest_url('karel-comgate/v1/notify')
+	$setStatusUrl = rest_url('comgate-mock-api/v2/setstate');
+	$notifyUrl = rest_url('karel-comgate/v2/notify')
 
 	?>
 	<!DOCTYPE html>

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ComGate Gateway
  * Description: Simple ComGate payment gateway for WooCommerce
- * Version: 0.0.1
+ * Version: 2.0.0
  * Author: Karel
  * Text Domain: karel-comgate-gateway
  * Requires at least: 6.0
@@ -11,8 +11,14 @@
  * WC tested up to: 9.0
  */
 
+use src\includes\Comgate_Gateway_Blocks;
+
 if (!defined( 'ABSPATH')) {
 	exit;
+}
+
+if (!defined('KAREL_COMGATE_PLUGIN_URL')) {
+	define('KAREL_COMGATE_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
 // Declare compatibility with WooCommerce features
@@ -25,7 +31,7 @@ add_action('before_woocommerce_init', function() {
 
 function karel_comgate_plugin_add_gateway($gateways) {
 	require_once __DIR__ . '/includes/WC_Gateway_Comgate_Simple.php';
-	$gateways[] = 'WC_Gateway_Comgate_Simple';
+	$gateways[] = 'src\includes\WC_Gateway_Comgate_Simple';
 	return $gateways;
 }
 
@@ -55,6 +61,16 @@ function karel_comgate_plugin_activate_block() {
 }
 
 add_action('woocommerce_blocks_loaded', 'karel_comgate_plugin_activate_block');
+
+function karel_comgate_load_textdomain() {
+	load_plugin_textdomain(
+		'comgate-plugin',
+		false,
+		dirname(plugin_basename(__FILE__)) . '/languages/'
+	);
+}
+
+add_action('plugins_loaded', 'karel_comgate_load_textdomain');
 
 // TEST MODE MOCK PAGE
 include __DIR__ . '/includes/comgate-mock-page.php';
