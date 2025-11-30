@@ -24,7 +24,8 @@ NEEDED INFO
 - formulář na vlastní potisk,
 - všude upoutávky na vlastní potisk
 - registrace na Packeta.com (Zásilkovna) a PPL pro automatizaci (pluginy PPL CZ a Packeta)
-
+- comgate: https://github.com/comgate-payments/sdk-php
+  - https://apidoc.comgate.cz/api/rest/#operation/v2-0-status
 
 WORDPRESS
 =========

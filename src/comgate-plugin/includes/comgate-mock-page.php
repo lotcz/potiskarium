@@ -20,6 +20,9 @@ function comgate_show_mock_payment_page() {
 		wp_die('Order not found');
 	}
 
+	$setStatusUrl = rest_url('comgate-mock-api/v1/setstate');
+	$notifyUrl = rest_url('karel-comgate/v1/notify')
+
 	?>
 	<!DOCTYPE html>
 	<html <?php language_attributes(); ?>>
@@ -219,6 +222,9 @@ function comgate_show_mock_payment_page() {
 				<button class="btn btn-secondary" onclick="processPayment('PENDING')">
 					⏸ Set Pending
 				</button>
+				<button class="btn btn-secondary" onclick="processPayment('AUTHORIZED')">
+					Authorize
+				</button>
 			</div>
 
 			<div id="processing" class="processing">
@@ -233,28 +239,51 @@ function comgate_show_mock_payment_page() {
 			document.getElementById('actions-form').style.display = 'none';
 			document.getElementById('processing').style.display = 'block';
 
-			// Simulate processing delay
-			setTimeout(function() {
-				const form = document.createElement('form');
-				form.method = 'GET';
-				form.action = '<?php echo $return_url ?>';
-
-				const fields = {
-					'refId': '<?php echo esc_js($order_id); ?>',
-					'status': status
-				};
-
-				for (const key in fields) {
-					const input = document.createElement('input');
-					input.type = 'hidden';
-					input.name = key;
-					input.value = fields[key];
-					form.appendChild(input);
+			fetch(
+				'<?php echo $setStatusUrl; ?>',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+					},
+					body: JSON.stringify(
+						{
+							'transId': '<?php echo $order_id?>',
+							'state': status
+						}
+					)
 				}
-
-				document.body.appendChild(form);
-				form.submit();
-			}, 1500);
+			).then(
+				(response) => {
+					if (response.status === 200) {
+						fetch(
+							'<?php echo $notifyUrl; ?>',
+							{
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									'Accept': 'application/json',
+								},
+								body: JSON.stringify(
+									{
+										'transId': '<?php echo $order_id?>',
+										'refId': '<?php echo $order_id?>'
+									}
+								)
+							}
+						).then(
+							(response) => {
+								if (response.status === 200) {
+									setTimeout(function () {
+										document.location = '<?php echo $return_url ?>';
+									}, 1500);
+								}
+							}
+						);
+					}
+				}
+			);
 		}
 	</script>
 	</body>

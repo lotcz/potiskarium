@@ -56,7 +56,7 @@ function karel_comgate_plugin_activate_block() {
 
 add_action('woocommerce_blocks_loaded', 'karel_comgate_plugin_activate_block');
 
-// MOCK PAGE
+// TEST MODE MOCK PAGE
 include __DIR__ . '/includes/comgate-mock-page.php';
 
 function karel_comgate_plugin_register_mock_page() {
