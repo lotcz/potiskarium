@@ -61,8 +61,8 @@ function my_custom_block_categories($categories) {
 add_filter( 'block_categories_all', 'my_custom_block_categories' );
 
 add_action('init', function () {
-	register_block_type(__DIR__ . '/build/logo-block');
-	register_block_type(__DIR__ . '/build/categories-menu-block');
+	register_block_type(__DIR__ . '/logo-block');
+	register_block_type(__DIR__ . '/categories-menu-block');
 });
 
 add_action('enqueue_block_editor_assets', function() {

@@ -13,8 +13,9 @@ module.exports = {
 		new CopyWebpackPlugin({
 			patterns: [
 				{
-					from: 'src/img/*',
-					to: 'img/[name][ext]'
+					from: '**/*.{svg,png,css}',
+					context: 'src',
+					to: '[path][name][ext]'
 				}
 			]
 		})
