@@ -4,20 +4,15 @@ import { ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ServerSideRender from '@wordpress/server-side-render';
 
-registerBlockType( 'potiskarium-theme/categories-menu-block', {
+registerBlockType('potiskarium-theme/collapsible-categories-block', {
 	edit: ( { attributes, setAttributes } ) => {
 		const blockProps = useBlockProps();
-		const { loadHierarchy, hideEmpty, hideDefault, showDefaultLast } = attributes;
+		const { hideEmpty, hideDefault, showDefaultLast } = attributes;
 
 		return (
 			<>
 				<InspectorControls>
 					<div style={{ margin: '1em' }}>
-						<ToggleControl
-							label={ __( 'Load Hierarchy') }
-							checked={ loadHierarchy }
-							onChange={ (value) => setAttributes({loadHierarchy: value }) }
-						/>
 						<ToggleControl
 							label={ __( 'Hide Empty') }
 							checked={ hideEmpty }
@@ -38,7 +33,7 @@ registerBlockType( 'potiskarium-theme/categories-menu-block', {
 				</InspectorControls>
 
 				<div {...blockProps}>
-					<ServerSideRender block="potiskarium-theme/categories-menu-block" attributes={ attributes } />
+					<ServerSideRender block="potiskarium-theme/collapsible-categories-block" attributes={ attributes } />
 				</div>
 			</>
 		);

@@ -10,7 +10,9 @@
 
 :root {
 	--brand-color: #4f3258;
+	--brand-color-highlight: #71487c;
 	--secondary-brand-color: #945fa5;
+	--secondary-brand-color-highlight: #bc7bd1;
 }
 
 .woocommerce-cart .wp-block-post-title {
@@ -22,22 +24,29 @@ button:focus {
 	outline: none !important;
 }
 
+.background-brand {
+	background-color: var(--brand-color);
+}
+
 .background-brand-secondary {
 	background-color: var(--secondary-brand-color);
 }
 
+.background-brand a,
 .background-brand-secondary a {
 	color: white;
 }
 
+/* HORIZONTAL MENU */
+
 .product-categories-menu {
-	margin: 0 !important;
-	padding: 5px !important;
+	margin: 0;
+	padding: 5px;
 }
 
-.product-categories-menu ul.product-categories-list {
-	margin: 0 !important;
-	padding: 0 !important;
+.product-categories-menu ul {
+	margin: 0;
+	padding: 0;
 	list-style-type: none;
 	display: flex;
 	gap: 1rem;
@@ -45,10 +54,92 @@ button:focus {
 
 .product-categories-menu li.product-category-item a {
 	text-decoration: none;
-	padding: 2px !important;
+	padding: 2px;
 }
 
 .product-categories-menu li.product-category-item a:hover {
 	text-decoration: underline;
+}
+
+.product-categories-menu ul.product-categories-submenu {
+	background-color: var(--secondary-brand-color);
+	display: none;
+	position: fixed;
+	z-index: 10000000;
+	padding: 10px;
+}
+
+.product-categories-menu ul.product-categories-submenu li.product-category-subitem {
+
+}
+
+.product-categories-menu ul.product-categories-submenu li.product-category-subitem a {
+	padding: 5px;
+}
+
+.product-categories-menu li.product-category-item:hover ul.product-categories-submenu {
+	display: block;
+}
+
+/* COLLAPSIBLE MENU */
+
+.collapsible-categories-menu {
+	margin: 0;
+	padding: 5px;
+}
+
+.collapsible-categories-menu ul {
+	display: block;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	gap: 1rem;
+}
+
+.collapsible-categories-menu a {
+	padding: 3px 15px;
+	margin: 2px;
+}
+
+.collapsible-categories-menu li.collapsible-category-item {
+
+
+}
+
+.collapsible-categories-menu li.collapsible-category-item:hover {
+
+}
+
+.collapsible-categories-menu li.collapsible-category-item a {
+	background-color: var(--brand-color);
+	color: white;
+	display: block;
+	text-decoration: none;
+}
+
+.collapsible-categories-menu li.collapsible-category-item a:hover {
+	background-color: var(--brand-color-highlight);
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list {
+
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item {
+
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item:hover {
+
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item a {
+	padding-left: 30px;
+	background-color: var(--secondary-brand-color);
+	color: white;
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item a:hover {
+	background-color: var(--secondary-brand-color-highlight);
 }
 

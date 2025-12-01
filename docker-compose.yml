@@ -55,11 +55,6 @@ services:
         ln -sf /var/log/wordpress/debug.log /var/www/wordpress/wp-content/debug.log &&
         php-fpm
       "
-    ports:
-      - "9001:9000"
-      - "9004:9003"
-    environment:
-      XDEBUG_CONFIG: "client_host=host.docker.internal"
     extra_hosts:
       - "host.docker.internal:host-gateway"
       - "potiskarium.loc:host-gateway"
