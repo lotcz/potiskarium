@@ -12,7 +12,7 @@
 	--brand-color: #4f3258;
 	--brand-color-highlight: #71487c;
 	--secondary-brand-color: #945fa5;
-	--secondary-brand-color-highlight: #bc7bd1;
+	--secondary-brand-color-highlight: #b378c6;
 }
 
 .woocommerce-cart .wp-block-post-title {
@@ -37,11 +37,25 @@ button:focus {
 	color: white;
 }
 
+.flex-1 {
+	flex: 1;
+}
+
+.wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button,
+.wc-block-components-button {
+	background-color: var(--brand-color) !important;
+}
+
+.wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button:hover,
+.wc-block-components-button:hover {
+	background-color: var(--brand-color-highlight) !important;
+}
+
 /* HORIZONTAL MENU */
 
 .product-categories-menu {
 	margin: 0;
-	padding: 5px;
+	padding: 0;
 }
 
 .product-categories-menu ul {
@@ -49,16 +63,17 @@ button:focus {
 	padding: 0;
 	list-style-type: none;
 	display: flex;
-	gap: 1rem;
 }
 
-.product-categories-menu li.product-category-item a {
+.product-categories-menu a {
 	text-decoration: none;
-	padding: 2px;
+	display: block;
+	margin: 0;
+	padding: 5px 1rem;
 }
 
-.product-categories-menu li.product-category-item a:hover {
-	text-decoration: underline;
+.product-categories-menu a:hover {
+	background-color: rgba(255, 255, 255, 0.3);
 }
 
 .product-categories-menu ul.product-categories-submenu {
@@ -66,7 +81,6 @@ button:focus {
 	display: none;
 	position: fixed;
 	z-index: 10000000;
-	padding: 10px;
 }
 
 .product-categories-menu ul.product-categories-submenu li.product-category-subitem {
@@ -74,7 +88,7 @@ button:focus {
 }
 
 .product-categories-menu ul.product-categories-submenu li.product-category-subitem a {
-	padding: 5px;
+
 }
 
 .product-categories-menu li.product-category-item:hover ul.product-categories-submenu {
@@ -85,7 +99,7 @@ button:focus {
 
 .collapsible-categories-menu {
 	margin: 0;
-	padding: 5px;
+	font-size: 120%;
 }
 
 .collapsible-categories-menu ul {
@@ -93,16 +107,27 @@ button:focus {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
-	gap: 1rem;
+}
+
+.collapsible-categories-menu li {
+	margin: 5px 0 0 0;
 }
 
 .collapsible-categories-menu a {
+	display: block;
+	color: white;
+	text-decoration: none;
 	padding: 3px 15px;
-	margin: 2px;
 }
 
-.collapsible-categories-menu li.collapsible-category-item {
+.collapsible-categories-menu a:hover {
 
+}
+
+/* root categories */
+
+.collapsible-categories-menu li.collapsible-category-item {
+	background-color: var(--brand-color);
 
 }
 
@@ -111,35 +136,52 @@ button:focus {
 }
 
 .collapsible-categories-menu li.collapsible-category-item a {
-	background-color: var(--brand-color);
-	color: white;
+
 	display: block;
-	text-decoration: none;
+
 }
 
 .collapsible-categories-menu li.collapsible-category-item a:hover {
 	background-color: var(--brand-color-highlight);
 }
 
+/* subcategories */
+
 .collapsible-categories-menu ul.collapsible-subcategories-list {
-
+	padding: 0 5px 5px 5px;
 }
 
-.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item {
-
-}
-
-.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item:hover {
-
-}
-
-.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item a {
-	padding-left: 30px;
+.collapsible-categories-menu ul.collapsible-subcategories-list li {
 	background-color: var(--secondary-brand-color);
-	color: white;
 }
 
-.collapsible-categories-menu ul.collapsible-subcategories-list li.collapsible-subcategory-item a:hover {
+.collapsible-categories-menu ul.collapsible-subcategories-list li:hover {
+
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list a {
+
+
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list a:hover {
 	background-color: var(--secondary-brand-color-highlight);
 }
 
+/* third level and more */
+
+.collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list {
+
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list li {
+	background-color: #ebbaff;
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list a {
+	color: #3c3c3c;
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list a:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+}

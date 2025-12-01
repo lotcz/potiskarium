@@ -40,7 +40,7 @@ class CategoryTree {
 
 }
 
-function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty) {
+function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, bool $showCounts) {
 	if (empty($tree->children)) return;
 	?>
 	<ul class="collapsible-subcategories-list">
@@ -51,7 +51,7 @@ function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty) {
 			?>
 			<li class="collapsible-subcategory-item">
 				<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
-				<?php collapsible_menu_render_children($subtree, $hideEmpty); ?>
+				<?php collapsible_menu_render_children($subtree, $hideEmpty, $showCounts); ?>
 			</li>
 			<?php
 		}

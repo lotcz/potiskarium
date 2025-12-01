@@ -7,12 +7,18 @@ import ServerSideRender from '@wordpress/server-side-render';
 registerBlockType('potiskarium-theme/collapsible-categories-block', {
 	edit: ( { attributes, setAttributes } ) => {
 		const blockProps = useBlockProps();
-		const { hideEmpty, hideDefault, showDefaultLast } = attributes;
+		const { hideEmpty, hideDefault, showDefaultLast, showProductCounts } = attributes;
 
 		return (
 			<>
 				<InspectorControls>
 					<div style={{ margin: '1em' }}>
+						<ToggleControl
+							disabled={ showProductCounts }
+							label={ __( 'Show Product Counts') }
+							checked={ showProductCounts }
+							onChange={ (value) => setAttributes({showProductCounts: value }) }
+						/>
 						<ToggleControl
 							label={ __( 'Hide Empty') }
 							checked={ hideEmpty }

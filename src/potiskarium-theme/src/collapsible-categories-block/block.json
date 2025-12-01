@@ -7,6 +7,10 @@
 	"editorScript": "file:./editor.js",
 	"render": "file:./index.php",
 	"attributes": {
+		"showProductCounts": {
+			"type": "boolean",
+			"default": true
+		},
 		"hideEmpty": {
 			"type": "boolean",
 			"default": true

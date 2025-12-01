@@ -2,11 +2,21 @@
 
 	$tree = CategoryTree::getInstance();
 
+	$showProductCounts = $attributes['showProductCounts'];
 	$hideEmpty = $attributes['hideEmpty'];
 	$hideDefault = $attributes['hideDefault'];
 	$showDefaultLast = $attributes['showDefaultLast'];
 	$defaultId = ($hideDefault || $showDefaultLast) ? get_option('default_product_cat') : null;
 
+	$renderItemFunction = function($tree, $hideEmpty, $showCounts) {
+		$category = $tree->category;
+		?>
+		<li class="collapsible-category-item">
+			<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
+			<?php collapsible_menu_render_children($tree, $hideEmpty, $showCounts); ?>
+		</li>
+		<?php
+	}
 ?>
 
 <div class="collapsible-categories-menu">
@@ -25,22 +35,11 @@
 						$defaultCatTree = $subtree;
 						continue;
 					}
-					?>
-					<li class="collapsible-category-item">
-						<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
-						<?php collapsible_menu_render_children($subtree, $hideEmpty); ?>
-					</li>
-					<?php
+					$renderItemFunction($subtree, $hideEmpty, $showProductCounts);
 				}
 
 				if (isset($defaultCatTree)) {
-					$category = $defaultCatTree->category;
-					?>
-					<li class="collapsible-category-item">
-						<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
-						<?php collapsible_menu_render_children($defaultCatTree, $hideEmpty); ?>
-					</li>
-					<?php
+					$renderItemFunction($defaultCatTree, $hideEmpty, $showProductCounts);
 				}
 			?>
 		</ul>
