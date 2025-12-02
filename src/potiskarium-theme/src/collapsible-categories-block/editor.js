@@ -14,7 +14,6 @@ registerBlockType('potiskarium-theme/collapsible-categories-block', {
 				<InspectorControls>
 					<div style={{ margin: '1em' }}>
 						<ToggleControl
-							disabled={ showProductCounts }
 							label={ __( 'Show Product Counts') }
 							checked={ showProductCounts }
 							onChange={ (value) => setAttributes({showProductCounts: value }) }

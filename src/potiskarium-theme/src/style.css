@@ -45,6 +45,7 @@ button:focus {
 .wp-block-button__link,
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button,
 .wc-block-components-button {
+	text-wrap: nowrap !important;
 	color: white !important;
 	background-color: var(--brand-color) !important;
 }
@@ -57,9 +58,16 @@ button:focus {
 	background-color: var(--brand-color-highlight) !important;
 }
 
+/* PRODUCT LISTING */
+
+.wc-block-components-product-image img {
+	width: auto;
+}
+
 /* HORIZONTAL MENU */
 
 .product-categories-menu {
+	overflow: hidden;
 	margin: 0;
 	padding: 0;
 }
@@ -71,7 +79,13 @@ button:focus {
 	display: flex;
 }
 
+
+.product-categories-menu li.active > a {
+	font-weight: bold;
+}
+
 .product-categories-menu a {
+	text-wrap: nowrap;
 	text-decoration: none;
 	display: block;
 	margin: 0;
@@ -87,14 +101,6 @@ button:focus {
 	display: none;
 	position: fixed;
 	z-index: 10000000;
-}
-
-.product-categories-menu ul.product-categories-submenu li.product-category-subitem {
-
-}
-
-.product-categories-menu ul.product-categories-submenu li.product-category-subitem a {
-
 }
 
 .product-categories-menu li.product-category-item:hover ul.product-categories-submenu {
@@ -119,32 +125,76 @@ button:focus {
 	margin: 5px 0 0 0;
 }
 
-.collapsible-categories-menu a {
-	display: block;
-	color: white;
-	text-decoration: none;
-	padding: 3px 15px;
+.collapsible-categories-menu li.active > a,
+.collapsible-categories-menu li.active > a:hover {
+	font-weight: bold;
 }
 
-.collapsible-categories-menu a:hover {
+.collapsible-categories-menu a {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	justify-content: space-between;
+	color: white;
+	text-decoration: none;
+	padding: 10px 15px;
+}
 
+.collapsible-categories-menu a > div {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.collapsible-categories-menu .collapsible-category-item-checkbox {
+	display: none;
+}
+
+.collapsible-categories-menu .collapsible-category-item-checkbox-label {
+	margin: 0;
+}
+
+.collapsible-categories-menu .collapsible-category-item-checkbox-label:before {
+	display: inline-block;
+	content: "+";
+	background-color: rgba(255, 255, 255, 0.3);
+	margin: 0;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	padding: 0 2px 4px 2px;
+	text-align: center;
+	border-radius: 50%;
+}
+
+.collapsible-categories-menu input.collapsible-category-item-checkbox + ul.collapsible-subcategories-list {
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	margin: 0;
+	transform: translateY(-6px);
+	transition: max-height .35s ease, opacity .25s ease, transform .25s ease;
+}
+
+.collapsible-categories-menu input.collapsible-category-item-checkbox:checked + ul.collapsible-subcategories-list {
+	max-height: 800px;
+	opacity: 1;
+	margin: initial;
+	transform: translateY(0);
+	transition: max-height .35s ease, opacity .25s ease, transform .25s ease;
+}
+
+.collapsible-category-count {
+	background-color: rgba(255, 255, 255, 0.3);
+	font-size: 50%;
+	padding: 1px 10px;
+	border-radius: 5px;
 }
 
 /* root categories */
 
 .collapsible-categories-menu li.collapsible-category-item {
 	background-color: var(--brand-color);
-
-}
-
-.collapsible-categories-menu li.collapsible-category-item:hover {
-
-}
-
-.collapsible-categories-menu li.collapsible-category-item a {
-
-	display: block;
-
 }
 
 .collapsible-categories-menu li.collapsible-category-item a:hover {
@@ -153,21 +203,13 @@ button:focus {
 
 /* subcategories */
 
-.collapsible-categories-menu ul.collapsible-subcategories-list {
-	padding: 0 5px 5px 5px;
-}
-
 .collapsible-categories-menu ul.collapsible-subcategories-list li {
 	background-color: var(--secondary-brand-color);
-}
-
-.collapsible-categories-menu ul.collapsible-subcategories-list li:hover {
-
+	margin: 5px;
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list a {
-
-
+	padding: 5px 10px 5px 45px;
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list a:hover {
@@ -176,16 +218,13 @@ button:focus {
 
 /* third level and more */
 
-.collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list {
-
-}
-
 .collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list li {
 	background-color: #ebbaff;
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list a {
-	color: #3c3c3c;
+	color: #1e1e1e;
+	padding: 5px 5px 5px 75px;
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list a:hover {

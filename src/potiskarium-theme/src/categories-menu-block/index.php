@@ -11,7 +11,7 @@
 	$renderMenuItem = function($tree, $hideEmpty, $loadHierarchy) {
 		$category = $tree->category;
 		?>
-			<li class="product-category-item">
+			<li class="product-category-item <?php echo $tree->isActive() ? 'active' : '' ?>">
 				<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
 				<?php
 					if ($loadHierarchy) {
@@ -24,7 +24,7 @@
 									if ($hideEmpty && $subcategoryTree->isEmpty()) continue;
 									$subcategory = $subcategoryTree->category;
 									?>
-									<li class="product-category-subitem">
+									<li class="product-category-subitem <?php echo $subcategoryTree->isActive() ? 'active' : '' ?>">
 										<a href="<?php echo esc_url(get_term_link($subcategory)) ?>"><?php echo esc_html($subcategory->name) ?></a>
 									</li>
 									<?php

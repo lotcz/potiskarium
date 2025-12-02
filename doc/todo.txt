@@ -1,11 +1,9 @@
 FUNC
 
-- test prod comgate
-- style comgate
 - rozbalovací menu
-- slider menu with custom content
-- about page with custom content
-- style after moje-triko.cz
+- formulář na vlastní potisk,
+- test prod comgate
+
 
 NEEDED INFO
 
@@ -15,16 +13,8 @@ NEEDED INFO
 
 2.0
 
-- formulář na vlastní potisk,
+
 - všude upoutávky na vlastní potisk
-- registrace na Packeta.com (Zásilkovna) a PPL pro automatizaci (pluginy PPL CZ a Packeta)
 - comgate: https://github.com/comgate-payments/sdk-php
   - https://apidoc.comgate.cz/api/rest/#operation/v2-0-status
 
-WORDPRESS
-=========
-
-TEMPLATE (Layout of entire pages)
-  TEMPLATE PART (Reused section of a theme)
-    PATTERN (A saved layout made of blocks)
-      BLOCK (smallest element)

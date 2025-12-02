@@ -13,11 +13,27 @@ class CategoryTree {
 
 	public mixed $category;
 
-	public array $children;
+	public array $children = [];
 
-	public function __construct(mixed $parent = null, ?array $all = null) {
+	private ?int $activeCategoryId;
+
+	private bool $containsActive = false;
+
+	private bool $containsNonEmptyChild = false;
+
+	public function __construct(mixed $parent = null, ?array $all = null, ?int $activeCategoryId = null) {
 		$parentId = empty($parent) ? 0 : $parent->term_id;
 		$this->category = $parent;
+		$this->activeCategoryId = $activeCategoryId;
+
+		if ($this->activeCategoryId === null) {
+			if (is_product_category()) {
+				$current = get_queried_object();
+				$this->activeCategoryId = $current->term_id;
+			} else {
+				$this->activeCategoryId = 0;
+			}
+		}
 
 		if ($all === null) {
 			$all = get_terms(array(
@@ -28,14 +44,39 @@ class CategoryTree {
 			));
 		}
 
-		$this->children = array_map(
-			fn ($category) => new CategoryTree($category, $all),
-			array_filter($all, fn ($subcategory) => $subcategory->parent == $parentId)
-		);
+		$childrenCategories = array_filter($all, fn ($subcategory) => $subcategory->parent == $parentId);
+
+		foreach ($childrenCategories as $category) {
+			$subtree = new CategoryTree($category, $all, $this->activeCategoryId);
+			$this->children[] = $subtree;
+			if ($subtree->isActive() || $subtree->containsActive()) {
+				$this->containsActive = true;
+			}
+			if (!$subtree->isEmpty()) {
+				$this->containsNonEmptyChild = true;
+			}
+		}
+
 	}
 
 	public function isEmpty(): bool {
-		return empty($this->children) && (empty($this->category) || $this->category->count === 0);
+		return (!$this->containsNonEmptyChild) && (empty($this->category) || $this->category->count === 0);
+	}
+
+	public function isActive(): bool {
+		return isset($this->category) && $this->category->term_id === $this->activeCategoryId;
+	}
+
+	public function hasChildren(): bool {
+		return !empty($this->children);
+	}
+
+	public function containsActive(): bool {
+		return $this->containsActive;
+	}
+
+	public function containsNonEmptyChild(): bool {
+		return $this->containsNonEmptyChild;
 	}
 
 }
@@ -43,14 +84,42 @@ class CategoryTree {
 function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, bool $showCounts) {
 	if (empty($tree->children)) return;
 	?>
+	<input
+		id="collapse-<?php echo $tree->category->term_id ?>"
+		name="collapse-<?php echo $tree->category->term_id ?>"
+		type="checkbox"
+		<?php echo ($tree->containsActive() || $tree->isActive()) ? 'checked' : '' ?>
+		class="collapsible-category-item-checkbox"
+	>
 	<ul class="collapsible-subcategories-list">
 		<?php
 		foreach ($tree->children as $subtree) {
 			$category = $subtree->category;
 			if ($hideEmpty && $subtree->isEmpty()) continue;
 			?>
-			<li class="collapsible-subcategory-item">
-				<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
+			<li class="collapsible-subcategory-item <?php echo $subtree->isActive() ? 'active' : '' ?>">
+				<a href="<?php echo esc_url(get_term_link($category)) ?>">
+					<div>
+						<?php
+							if (!empty($subtree->children)) {
+								?>
+								<label
+									class="collapsible-category-item-checkbox-label"
+									for="collapse-<?php echo $category->term_id ?>"
+								></label>
+								<?php
+							}
+						?>
+						<div><?php echo esc_html($category->name) ?></div>
+					</div>
+					<?php
+					if ($showCounts) {
+						?>
+						<div class="collapsible-category-count"><?php echo $category->count ?></div>
+						<?php
+					}
+					?>
+				</a>
 				<?php collapsible_menu_render_children($subtree, $hideEmpty, $showCounts); ?>
 			</li>
 			<?php

@@ -11,8 +11,29 @@
 	$renderItemFunction = function($tree, $hideEmpty, $showCounts) {
 		$category = $tree->category;
 		?>
-		<li class="collapsible-category-item">
-			<a href="<?php echo esc_url(get_term_link($category)) ?>"><?php echo esc_html($category->name) ?></a>
+		<li class="collapsible-category-item <?php echo $tree->isActive() ? 'active' : '' ?>">
+			<a href="<?php echo esc_url(get_term_link($category)) ?>">
+				<div>
+					<?php
+						if ($tree->hasChildren() && ($tree->containsNonEmptyChild() || !$hideEmpty)) {
+							?>
+							<label
+								class="collapsible-category-item-checkbox-label"
+								for="collapse-<?php echo $category->term_id ?>"
+							></label>
+							<?php
+						}
+					?>
+					<div><?php echo esc_html($category->name)?></div>
+				</div>
+				<?php
+					if ($showCounts) {
+						?>
+						<div class="collapsible-category-count"><?php echo $category->count ?></div>
+						<?php
+					}
+				?>
+			</a>
 			<?php collapsible_menu_render_children($tree, $hideEmpty, $showCounts); ?>
 		</li>
 		<?php
