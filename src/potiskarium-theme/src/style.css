@@ -41,13 +41,19 @@ button:focus {
 	flex: 1;
 }
 
+.wp-element-button,
+.wp-block-button__link,
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button,
 .wc-block-components-button {
+	color: white !important;
 	background-color: var(--brand-color) !important;
 }
 
+.wp-element-button:hover,
+.wp-block-button__link:hover,
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button:hover,
 .wc-block-components-button:hover {
+	color: white !important;
 	background-color: var(--brand-color-highlight) !important;
 }
 

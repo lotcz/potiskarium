@@ -50,6 +50,7 @@ services:
     entrypoint: >
       sh -c "
         ln -sfn /var/www/comgate-plugin/build /var/www/wordpress/wp-content/plugins/comgate-plugin &&
+        ln -sfn /var/www/potiskarium-plugin/build /var/www/wordpress/wp-content/plugins/potiskarium-plugin &&
         ln -sfn /var/www/potiskarium-construction /var/www/wordpress/wp-content/themes/potiskarium-construction &&
         ln -sfn /var/www/potiskarium-theme/build /var/www/wordpress/wp-content/themes/potiskarium-theme &&
         ln -sf /var/log/wordpress/debug.log /var/www/wordpress/wp-content/debug.log &&
