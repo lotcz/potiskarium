@@ -34,6 +34,29 @@ function potiskarium_designer_hide() {
 	if (existing) existing.remove();
 }
 
+async function potiskarium_designer_upload_file(file) {
+	const formData = new FormData();
+	formData.append('file', file);
+	formData.append('title', 'Custom uploaded image');
+	formData.append('alt_text', 'Custom uploaded image');
+
+	const res = await fetch(PotiskariumDesigner.uploadRestUrl, {
+		method: 'POST',
+		headers: {
+			'X-WP-Nonce': PotiskariumDesigner.nonce,
+			'Content-Disposition': `attachment; filename="${file.name}"`,
+		},
+		body: formData
+	});
+
+	if (!res.ok) {
+		const err = await res.text();
+		throw new Error('Upload failed: ' + err);
+	}
+
+	return await res.json();
+}
+
 async function potiskarium_designer_save() {
 	const designer = potiskarium_designer_get();
 	const params = {
@@ -70,18 +93,13 @@ function potiskarium_designer_show(params) {
 	const designer = document.createElement('div');
 	designer.setAttribute('id', 'potiskarium_designer');
 	designer.classList.add('designer-overlay');
+	designer.dataset.custom_image = params.custom_image;
 	designer.addEventListener('click', () => potiskarium_designer_hide());
 	document.body.appendChild(designer);
 
 	const wrapper = document.createElement('div');
 	wrapper.classList.add('designer-wrapper');
-	wrapper.addEventListener(
-		'click',
-		(e) => {
-			e.preventDefault();
-			e.stopPropagation();
-		}
-	);
+	wrapper.addEventListener('click', (e) => e.stopPropagation());
 	designer.appendChild(wrapper);
 
 	/* heading */
@@ -100,6 +118,11 @@ function potiskarium_designer_show(params) {
 	body.classList.add('designer-body');
 	wrapper.appendChild(body);
 
+	const image = document.createElement('img');
+	image.classList.add('designer-custom-image');
+	image.setAttribute('src', params.custom_image);
+	body.appendChild(image);
+
 	const form = document.createElement('form');
 	body.appendChild(form);
 
@@ -107,6 +130,21 @@ function potiskarium_designer_show(params) {
 	fileInput.setAttribute('type', 'file');
 	fileInput.setAttribute('accept', 'image/*');
 	fileInput.setAttribute('name', 'image');
+	fileInput.addEventListener(
+		'change',
+		async (e) => {
+			const file = e.target.files[0];
+			if (!file) return;
+
+			try {
+				const uploaded = await potiskarium_designer_upload_file(file);
+				image.setAttribute('src', uploaded.source_url);
+				designer.dataset.custom_image = uploaded.source_url;
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	);
 	form.appendChild(fileInput);
 
 	/* footer */
