@@ -8,7 +8,7 @@ const settings = getSetting('karel_comgate_plugin_payment_data', {});
 const defaultLabel = decodeEntities(settings.title) || 'Online Payment';
 const description = decodeEntities(settings.description) || 'You will be redirected to a secure payment gateway to complete the payment.';
 
-const imagesUrl = KarelComgatePluginData.pluginUrl + 'img/';
+const imagesUrl = window.KarelComgatePluginData ? window.KarelComgatePluginData.pluginUrl + 'img/' : '';
 
 const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 	const [isProcessing, setIsProcessing] = useState(false);

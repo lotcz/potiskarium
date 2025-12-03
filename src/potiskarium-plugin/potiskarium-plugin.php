@@ -98,7 +98,7 @@ add_action('woocommerce_before_add_to_cart_button', function() {
 	<?php
 });
 
-add_filter( 'woocommerce_add_to_cart_validation', function($passed, $product_id) {
+add_filter('woocommerce_add_to_cart_validation', function($passed, $product_id) {
 	if (!product_supports_custom_print($product_id)) {
 		return $passed;
 	}
@@ -121,7 +121,13 @@ add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_
 	return $cart_item_data;
 }, 10, 2 );
 
-add_filter('woocommerce_get_item_data', function( $item_data, $cart_item ) {
+add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_item_key, $values) {
+	if (isset($values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
+		$item->add_meta_data(POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA, $values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]);
+	}
+}, 10, 3 );
+
+add_filter('woocommerce_get_item_data', function($item_data, $cart_item) {
 	if (isset($cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA])) {
 		$item_data[] = [
 			'name'  => POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA,
@@ -130,12 +136,6 @@ add_filter('woocommerce_get_item_data', function( $item_data, $cart_item ) {
 	}
 	return $item_data;
 }, 10, 2 );
-
-add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_item_key, $values) {
-	if (isset($values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
-		$item->add_meta_data(POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA, $values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]);
-	}
-}, 10, 3 );
 
 add_filter('woocommerce_order_item_get_formatted_meta_data', function($formatted_meta, $item) {
 	foreach ($formatted_meta as $meta) {
@@ -147,7 +147,7 @@ add_filter('woocommerce_order_item_get_formatted_meta_data', function($formatted
 }, 10, 2 );
 
 add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) {
-	if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA ) {
+	if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
 		return $meta->value;
 	}
 	return $value;
@@ -161,19 +161,21 @@ add_action(
 	'wp_enqueue_scripts',
 	function() {
 		wp_enqueue_style(
-			'potiskarium-designer-style',
+			'potiskarium-designer-cssstyle',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.css',
 			[],
 			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.css')
 		);
+
 		wp_enqueue_script(
-			'potiskarium-designer-script',
+			'potiskarium-designer-jscript',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.js',
-			['wc-blocks'],
+			[ 'wc-blocks-checkout' ],
 			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.js')
 		);
+
 		wp_localize_script(
-			'potiskarium-designer-script',
+			'potiskarium-designer-jscript',
 			'PotiskariumDesigner',
 			[
 				'uploadRestUrl' => rest_url('wp/v2/media'),
