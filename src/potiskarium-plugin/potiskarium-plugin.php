@@ -138,16 +138,7 @@ add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_
 		$item->add_meta_data(POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA, $values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]);
 	}
 }, 10, 3 );
-/*
-add_filter('woocommerce_order_item_get_formatted_meta_data', function($formatted_meta, $item) {
-	foreach ($formatted_meta as $meta) {
-		if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
-			$meta->display_value = $meta->value;
-		}
-	}
-	return $formatted_meta;
-}, 10, 2 );
-*/
+
 add_filter('woocommerce_order_item_display_meta_key', function ($display_key, $meta, $item) {
 	if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
 		return 'Vlastní obrázek';
@@ -165,28 +156,37 @@ add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) 
 }, 10, 2 );
 
 /*
- * DESIGNER
+ * DESIGNER AND PREVIEW
  */
+
+add_action('admin_enqueue_scripts', function() {
+	wp_enqueue_style(
+		'potiskarium-designer-style-admin',
+		plugin_dir_url(__FILE__) . 'potiskarium-preview-admin.css',
+		[],
+		filemtime(plugin_dir_path(__FILE__) . 'potiskarium-preview-admin.css')
+	);
+});
 
 add_action(
 	'wp_enqueue_scripts',
 	function() {
 		wp_enqueue_style(
-			'potiskarium-designer-cssstyle',
+			'potiskarium-designer-style',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.css',
 			[],
 			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.css')
 		);
 
 		wp_enqueue_script(
-			'potiskarium-designer-jscript',
+			'potiskarium-designer-script',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.js',
 			[ ],
 			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.js')
 		);
 
 		wp_localize_script(
-			'potiskarium-designer-jscript',
+			'potiskarium-designer-script',
 			'PotiskariumDesigner',
 			[
 				'uploadRestUrl' => rest_url('wp/v2/media'),

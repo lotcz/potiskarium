@@ -76,6 +76,10 @@
 	margin-bottom: 1rem;
 }
 
+.custom-upload-wrapper label {
+	margin: 0 !important;
+}
+
 .custom-upload-wrapper,
 .wc-block-order-confirmation-totals table .wc-item-meta li,
 .wc-block-components-product-details__vlastn-potisk {
