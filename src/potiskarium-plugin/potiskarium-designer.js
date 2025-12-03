@@ -40,6 +40,7 @@ async function potiskarium_designer_save() {
 	const input = document.getElementById('potiskarium_uploaded_custom_item_data');
 	if (input) {
 		input.value = value;
+		potiskarium_preview_init();
 	} else {
 		const response = await fetch(
 			'/wp-json/wc/store/cart/update-item',
@@ -192,8 +193,8 @@ function potiskarium_designer_show(params) {
 	confirmBtn.addEventListener(
 		'click',
 		async () => {
-
 			await potiskarium_designer_save();
+			potiskarium_preview_init();
 			potiskarium_designer_hide();
 		}
 	);

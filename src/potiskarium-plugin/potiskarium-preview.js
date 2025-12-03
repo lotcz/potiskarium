@@ -42,13 +42,16 @@ function potiskarium_preview_show(params, element) {
 }
 
 function potiskarium_preview_init() {
-	const hiddenInput = document.getElementById("POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA");
+	const hiddenInput = document.getElementById("potiskarium_uploaded_custom_item_data");
 	if (hiddenInput) {
 		const data = hiddenInput.value;
 		if (data.startsWith('{')) {
 			const json = decodeURIComponent(data).replace(/\\"/g, '"');
 			const params = JSON.parse(json);
-			potiskarium_preview_show(params, element);
+			const element = document.querySelector('.custom-upload-preview');
+			if (element) {
+				potiskarium_preview_show(params, element);
+			}
 		}
 	}
 	document

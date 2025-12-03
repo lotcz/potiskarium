@@ -123,12 +123,6 @@ add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_
 	return $cart_item_data;
 }, 10, 2 );
 
-add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_item_key, $values) {
-	if (isset($values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
-		$item->add_meta_data(POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA, $values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]);
-	}
-}, 10, 3 );
-
 add_filter('woocommerce_get_item_data', function($item_data, $cart_item) {
 	if (isset($cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA])) {
 		$item_data[] = [
@@ -139,6 +133,12 @@ add_filter('woocommerce_get_item_data', function($item_data, $cart_item) {
 	return $item_data;
 }, 10, 2 );
 
+add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_item_key, $values) {
+	if (isset($values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
+		$item->add_meta_data(POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA, $values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]);
+	}
+}, 10, 3 );
+/*
 add_filter('woocommerce_order_item_get_formatted_meta_data', function($formatted_meta, $item) {
 	foreach ($formatted_meta as $meta) {
 		if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
@@ -147,10 +147,19 @@ add_filter('woocommerce_order_item_get_formatted_meta_data', function($formatted
 	}
 	return $formatted_meta;
 }, 10, 2 );
+*/
+add_filter('woocommerce_order_item_display_meta_key', function ($display_key, $meta, $item) {
+	if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
+		return 'Vlastní obrázek';
+	}
+	return $display_key;
+}, 10, 3);
 
 add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) {
 	if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
-		return $meta->value;
+		$json = str_replace("\\\"", "\"", $meta->value);
+		$params = json_decode($json, true);
+		return "<div class=\"potiskarium-design-preview\"><div class=\"custom-image-wrapper\"><img src=\"{$params['custom_image']}\"></div></div>";
 	}
 	return $value;
 }, 10, 2 );
