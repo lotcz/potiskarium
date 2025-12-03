@@ -90,11 +90,13 @@ add_action('woocommerce_before_add_to_cart_button', function() {
 	global $product;
 	if (!product_supports_custom_print($product->get_id())) return;
 	?>
-	<p class="custom-upload-wrapper">
-    	<label for="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>">Nahrajte obrázek pro potisk:</label>
+	<div class="custom-upload-wrapper">
+    	<label for="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>">Obrázek pro vlastní potisk:</label>
 		<input type="hidden" name="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" id="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" />
-		<button class="potiskarium-designer-btn wp-element-button" type="button">Designer</button>
-	</p>
+		<div class="custom-upload-preview">
+			<button class="potiskarium-designer-btn wp-element-button" type="button">Nahrát vlastní obrázek</button>
+		</div>
+	</div>
 	<?php
 });
 
@@ -116,7 +118,7 @@ add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_
 	if (isset($_POST[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA])) {
 		$cart_item_data[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA] = $_POST[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA];
 	} else {
-		wc_add_notice('No design data posted', 'error');
+		wc_add_notice('Je třeba nahrát obrázek pro potisk!', 'error');
 	}
 	return $cart_item_data;
 }, 10, 2 );
@@ -130,7 +132,7 @@ add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_
 add_filter('woocommerce_get_item_data', function($item_data, $cart_item) {
 	if (isset($cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA])) {
 		$item_data[] = [
-			'name'  => POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA,
+			'name'  => 'Vlastní potisk',
 			'value' => $cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]
 		];
 	}
@@ -170,7 +172,7 @@ add_action(
 		wp_enqueue_script(
 			'potiskarium-designer-jscript',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.js',
-			[ 'wc-blocks-checkout' ],
+			[ ],
 			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.js')
 		);
 
@@ -182,6 +184,14 @@ add_action(
 				'nonce'   => wp_create_nonce('wp_rest'),
 			]
 		);
+
+		wp_enqueue_script(
+			'potiskarium-preview-jscript',
+			plugin_dir_url( __FILE__ ) . 'potiskarium-preview.js',
+			[ 'wc-blocks-checkout' ],
+			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-preview.js')
+		);
+
 	}
 );
 

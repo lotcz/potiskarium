@@ -1,7 +1,7 @@
 #potiskarium_designer.designer-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba(0,0,0,0.6);
+	background: rgba(0,0,0,0.75);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -15,9 +15,86 @@
 	min-width: 300px;
 	max-width: 90%;
 	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 }
 
-#potiskarium_designer .designer-custom-image {
-	max-width: 300px;
-	max-height: 300px;
+#potiskarium_designer h2,
+#potiskarium_designer h3 {
+	padding: 0;
+	margin: 0;
+	text-align: center;
+}
+
+#potiskarium_designer h3 {
+	font-size: 120%;
+	font-weight: bold;
+}
+
+#potiskarium_designer .designer-body {
+	display: flex;
+	gap: 1rem;
+}
+
+#potiskarium_designer .designer-custom-image,
+#potiskarium_designer .designer-preview-image {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+#potiskarium_designer .designer-custom-image-wrapper,
+#potiskarium_designer .designer-preview-image-wrapper {
+	width: 300px;
+	height: 300px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 1px dashed black;
+	padding: 10px;
+}
+
+#potiskarium_designer .designer-custom-image img,
+#potiskarium_designer .designer-preview-image img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#potiskarium_designer .designer-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+/*
+	PREVIEW
+ */
+
+.custom-upload-wrapper {
+	margin-bottom: 1rem;
+}
+
+.custom-upload-wrapper,
+.wc-block-components-product-details__vlastn-potisk {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.potiskarium-design-preview {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.potiskarium-design-preview .custom-image-wrapper {
+	max-width: 100px;
+	height: 50px;
+}
+
+.potiskarium-design-preview .custom-image-wrapper img {
+	max-width: 100%;
+	max-height: 100%;
 }

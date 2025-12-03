@@ -1,30 +1,3 @@
-if (window.wc.blocksCheckout) {
-	const {registerCheckoutFilters} = window.wc.blocksCheckout;
-
-	function hack_it() {
-		console.log('Hack it');
-		const elements = document.querySelectorAll('.wc-block-components-product-details__value');
-		console.log(elements.length);
-
-		elements.forEach(element => {
-			const value = element.innerText;
-			console.log(value);
-			if (value && value.length > 0 && value.startsWith('http')) {
-				element.innerHTML = `<img src="${value}" style="max-width:100px">`;
-			}
-		});
-	}
-
-	const modifyItemName = (defaultValue, extensions, args) => {
-		setTimeout(() => hack_it(), 1000);
-		return defaultValue;
-	};
-
-	registerCheckoutFilters('hack-extension', {
-		itemName: modifyItemName,
-	});
-}
-
 function potiskarium_designer_get() {
 	return document.getElementById('potiskarium_designer');
 }
@@ -87,6 +60,27 @@ async function potiskarium_designer_save() {
 	}
 }
 
+function potiskarium_designer_set_custom_file(url) {
+	const designer = potiskarium_designer_get();
+	if (!designer) return;
+
+	const customImageWrapper = designer.querySelector('.designer-custom-image-wrapper');
+	customImageWrapper.innerHTML = '';
+
+	if (url === null) {
+		const loading = document.createElement('div');
+		loading.classList.add('loading');
+		loading.innerText = 'Nahrávám...';
+		customImageWrapper.appendChild(loading);
+	} else if (url.length > 0) {
+		const img = document.createElement('img');
+		customImageWrapper.appendChild(img);
+		img.setAttribute('src', url);
+	}
+
+	designer.dataset.custom_image = url;
+}
+
 function potiskarium_designer_show(params) {
 	potiskarium_designer_hide();
 
@@ -102,29 +96,35 @@ function potiskarium_designer_show(params) {
 	wrapper.addEventListener('click', (e) => e.stopPropagation());
 	designer.appendChild(wrapper);
 
-	/* heading */
+	/* HEADING */
 
 	const heading = document.createElement('div');
 	heading.classList.add('designer-heading');
 	wrapper.appendChild(heading);
 
 	const title = document.createElement('h2');
-	title.innerText = 'Designer';
+	title.innerText = 'Vlastní potisk';
 	heading.appendChild(title);
 
-	/* body */
+	/* BODY */
 
 	const body = document.createElement('div');
 	body.classList.add('designer-body');
 	wrapper.appendChild(body);
 
-	const image = document.createElement('img');
-	image.classList.add('designer-custom-image');
-	image.setAttribute('src', params.custom_image);
-	body.appendChild(image);
+	/* custom image */
 
-	const form = document.createElement('form');
-	body.appendChild(form);
+	const customImage = document.createElement('div');
+	customImage.classList.add('designer-custom-image');
+	body.appendChild(customImage);
+
+	const customImageHeader = document.createElement('h3');
+	customImageHeader.innerText = 'Váš obrázek';
+	customImage.appendChild(customImageHeader);
+
+	const customImageWrapper = document.createElement('div');
+	customImageWrapper.classList.add('designer-custom-image-wrapper');
+	customImage.appendChild(customImageWrapper);
 
 	const fileInput = document.createElement('input');
 	fileInput.setAttribute('type', 'file');
@@ -137,21 +137,53 @@ function potiskarium_designer_show(params) {
 			if (!file) return;
 
 			try {
+				potiskarium_designer_set_custom_file(null);
 				const uploaded = await potiskarium_designer_upload_file(file);
-				image.setAttribute('src', uploaded.source_url);
-				designer.dataset.custom_image = uploaded.source_url;
+				potiskarium_designer_set_custom_file(uploaded.source_url);
 			} catch (err) {
 				console.error(err);
 			}
 		}
 	);
-	form.appendChild(fileInput);
+	customImage.appendChild(fileInput);
 
-	/* footer */
+	/* AI preview */
+
+	const previewImage = document.createElement('div');
+	previewImage.classList.add('designer-preview-image');
+	body.appendChild(previewImage);
+
+	const previewImageHeader = document.createElement('h3');
+	previewImageHeader.innerText = 'Náhled';
+	previewImage.appendChild(previewImageHeader);
+
+	const previewImageWrapper = document.createElement('div');
+	previewImageWrapper.classList.add('designer-preview-image-wrapper');
+	previewImage.appendChild(previewImageWrapper);
+
+	const imgPreview = document.createElement('img');
+	if (params.preview_image) {
+		imgPreview.setAttribute('src', params.preview_image);
+	}
+	previewImageWrapper.appendChild(imgPreview);
+
+	/* FOOTER */
 
 	const footer = document.createElement('div');
 	footer.classList.add('designer-footer');
 	wrapper.appendChild(footer);
+
+	const closeBtn = document.createElement('a');
+	closeBtn.innerText = 'Zavřít';
+	closeBtn.setAttribute('href', '#');
+	closeBtn.addEventListener(
+		'click',
+		async (e) => {
+			potiskarium_designer_hide();
+			e.preventDefault();
+		}
+	);
+	footer.appendChild(closeBtn);
 
 	const confirmBtn = document.createElement('button');
 	confirmBtn.classList.add('button');
@@ -166,6 +198,10 @@ function potiskarium_designer_show(params) {
 		}
 	);
 	footer.appendChild(confirmBtn);
+
+	if (params.custom_image) {
+		potiskarium_designer_set_custom_file(params.custom_image ? params.custom_image : '');
+	}
 }
 
 function potiskarium_designer_init() {
