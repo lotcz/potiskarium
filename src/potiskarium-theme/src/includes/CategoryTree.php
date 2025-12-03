@@ -81,23 +81,25 @@ class CategoryTree {
 
 }
 
-function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, bool $showCounts, bool $expanded) {
+function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, bool $showCounts, bool $startExpanded) {
 	if (empty($tree->children)) return;
+	$expanded = ($startExpanded || $tree->containsActive() || $tree->isActive());
 	?>
 	<input
-		id="collapse-<?php echo $tree->category->term_id ?>"
-		name="collapse-<?php echo $tree->category->term_id ?>"
+		id="collapsible_menu_item_<?php echo $tree->category->term_id ?>"
+		name="collapsible_menu_item_<?php echo $tree->category->term_id ?>"
 		type="checkbox"
-		<?php echo ($expanded || $tree->containsActive() || $tree->isActive()) ? 'checked' : '' ?>
+		<?php echo $expanded ? 'checked' : '' ?>
 		class="collapsible-category-item-checkbox"
 	>
 	<ul class="collapsible-subcategories-list">
 		<?php
 		foreach ($tree->children as $subtree) {
 			$category = $subtree->category;
+			$expanded = ($startExpanded || $subtree->containsActive() || $subtree->isActive());
 			if ($hideEmpty && $subtree->isEmpty()) continue;
 			?>
-			<li class="collapsible-subcategory-item <?php echo $subtree->isActive() ? 'active' : '' ?>">
+			<li class="collapsible-subcategory-item <?php echo $subtree->isActive() ? 'active' : '' ?> <?php echo $expanded ? 'expanded' : '' ?>">
 				<a href="<?php echo esc_url(get_term_link($category)) ?>">
 					<div>
 						<?php
@@ -105,7 +107,7 @@ function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, b
 								?>
 								<label
 									class="collapsible-category-item-checkbox-label"
-									for="collapse-<?php echo $category->term_id ?>"
+									for="collapsible_menu_item_<?php echo $category->term_id ?>"
 								></label>
 								<?php
 							}
@@ -120,7 +122,7 @@ function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, b
 					}
 					?>
 				</a>
-				<?php collapsible_menu_render_children($subtree, $hideEmpty, $showCounts, $expanded); ?>
+				<?php collapsible_menu_render_children($subtree, $hideEmpty, $showCounts, $startExpanded); ?>
 			</li>
 			<?php
 		}

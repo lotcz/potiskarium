@@ -5,6 +5,7 @@
 	"category": "potiskarium-theme-blocks",
 	"icon": "list-view",
 	"editorScript": "file:./editor.js",
+	"viewScript": "file:./collapsible-menu.js",
 	"render": "file:./index.php",
 	"attributes": {
 		"showProductCounts": {

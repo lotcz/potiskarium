@@ -152,22 +152,33 @@ button:focus {
 
 .collapsible-categories-menu .collapsible-category-item-checkbox-label {
 	margin: 0;
+	padding: 0;
 }
 
 .collapsible-categories-menu .collapsible-category-item-checkbox-label:before {
-	display: inline-block;
-	content: "+";
+	display: block;
+	content: ' ';
+	background-image: url('img/plus.svg');
 	background-color: rgba(255, 255, 255, 0.3);
-	margin: 0;
+	background-position: center;
+	background-repeat: no-repeat;
 	width: 20px;
 	height: 20px;
 	line-height: 20px;
-	padding: 0 2px 4px 2px;
-	text-align: center;
+	margin: 0;
+	padding: 2px;
 	border-radius: 50%;
 }
 
-.collapsible-categories-menu input.collapsible-category-item-checkbox + ul.collapsible-subcategories-list {
+.collapsible-categories-menu .collapsible-category-item-checkbox-label:hover:before {
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.collapsible-categories-menu .expanded > a > div .collapsible-category-item-checkbox-label:before {
+	background-image: url('img/minus.svg');
+}
+
+.collapsible-categories-menu ul.collapsible-subcategories-list {
 	max-height: 0;
 	overflow: hidden;
 	opacity: 0;

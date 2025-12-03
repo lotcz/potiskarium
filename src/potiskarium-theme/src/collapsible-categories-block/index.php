@@ -11,8 +11,9 @@
 
 	$renderItemFunction = function($tree, $hideEmpty, $showCounts, $startExpanded) {
 		$category = $tree->category;
+		$expanded = ($startExpanded || $tree->containsActive() || $tree->isActive());
 		?>
-		<li class="collapsible-category-item <?php echo $tree->isActive() ? 'active' : '' ?>">
+		<li class="collapsible-category-item <?php echo $tree->isActive() ? 'active' : '' ?> <?php echo $expanded ? 'expanded' : '' ?>">
 			<a href="<?php echo esc_url(get_term_link($category)) ?>">
 				<div>
 					<?php
@@ -20,7 +21,7 @@
 							?>
 							<label
 								class="collapsible-category-item-checkbox-label"
-								for="collapse-<?php echo $category->term_id ?>"
+								for="collapsible_menu_item_<?php echo $category->term_id ?>"
 							></label>
 							<?php
 						}
