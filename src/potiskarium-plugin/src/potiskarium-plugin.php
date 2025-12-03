@@ -19,12 +19,8 @@ if (!defined('POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META')) {
 	define('POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META', '_potiskarium_allow_custom_print');
 }
 
-if (!defined('POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA')) {
-	define('POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA', 'potiskarium_uploaded_custom_print_image');
-}
-
-if (!defined('POTISKARIUM_PLUGIN_PREVIEW_FILE_DATA')) {
-	define('POTISKARIUM_PLUGIN_PREVIEW_FILE_DATA', 'potiskarium_preview_custom_print_image');
+if (!defined('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA')) {
+	define('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA', 'potiskarium_uploaded_custom_item_data');
 }
 
 add_action( 'before_woocommerce_init', function() {
@@ -32,6 +28,13 @@ add_action( 'before_woocommerce_init', function() {
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 	}
 });
+
+add_action(
+	'init',
+	function() {
+		register_block_type(__DIR__ . '/potiskarium-designer');
+	}
+);
 
 function potiskarium_plugin_category_form_uploads_field(mixed $term) {
 	$enabled = empty($term) || is_string($term) ? 0 : get_term_meta( $term->term_id, POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META, true );
@@ -87,114 +90,68 @@ add_action('woocommerce_before_add_to_cart_button', function() {
 	if (!product_supports_custom_print($product->get_id())) return;
 	?>
 	<p class="custom-upload-wrapper">
-    	<label for="custom_image">Nahrajte obrázek pro potisk:</label>
-		<input type="file" name="custom_image" id="custom_image" accept="image/*" />
+    	<label for="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>">Nahrajte obrázek pro potisk:</label>
+		<input type="hidden" name="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" id="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" />
+		<button class="potiskarium-designer-btn" type="button">Designer</button>
 	</p>
 	<?php
 });
 
-add_filter( 'woocommerce_add_to_cart_validation', function( $passed, $product_id ) {
-
-	if ( ! product_supports_custom_print( $product_id ) ) {
+add_filter( 'woocommerce_add_to_cart_validation', function($passed, $product_id) {
+	if (!product_supports_custom_print($product_id)) {
 		return $passed;
 	}
 
-	if ( empty($_FILES['custom_image']['size']) ) {
+	if (empty($_POST[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
 		wc_add_notice('Nahrajte obrázek pro potisk.', 'error');
 		return false;
 	}
-
 	return $passed;
-
 }, 10, 2 );
 
-add_filter( 'woocommerce_add_cart_item_data', function( $cart_item_data, $product_id ) {
-
-	if ( ! product_supports_custom_print( $product_id ) ) {
+add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_id) {
+	if (!product_supports_custom_print($product_id ) ) {
 		return $cart_item_data;
 	}
 
-	if ( isset($_FILES['custom_image']) && $_FILES['custom_image']['size'] > 0 ) {
-
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-
-		$uploaded = wp_handle_upload(
-			$_FILES['custom_image'],
-			[ 'test_form' => false ]
-		);
-
-		if (isset( $uploaded['error'])) {
-			wc_add_notice($uploaded['error'], 'error');
-		} else {
-			$cart_item_data[POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA] = $uploaded['url'];
-		}
+	if (isset($_POST['POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA'])) {
+		$cart_item_data[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA] = $_POST['POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA'];
+	} else {
+		wc_add_notice('No design data posted', 'error');
 	}
 
 	return $cart_item_data;
-
 }, 10, 2 );
 
-add_filter( 'woocommerce_get_item_data', function( $item_data, $cart_item ) {
-
-	if ( isset($cart_item[POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA]) ) {
-
+add_filter('woocommerce_get_item_data', function( $item_data, $cart_item ) {
+	if (isset($cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA])) {
 		$item_data[] = [
-			'name'  => 'Obrázek k potisku',
-			'value' => $cart_item[POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA]
+			'name'  => POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA,
+			'value' => $cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]
 		];
-
-		//error_log(print_r($item_data, true));
 	}
-
 	return $item_data;
-
 }, 10, 2 );
 
-add_action( 'woocommerce_checkout_create_order_line_item', function( $item, $cart_item_key, $values ) {
-
-	if ( isset($values[POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA]) ) {
-		$item->add_meta_data(POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA, $values[POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA] );
+add_action('woocommerce_checkout_create_order_line_item', function($item, $cart_item_key, $values) {
+	if (isset($values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
+		$item->add_meta_data(POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA, $values[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]);
 	}
-
 }, 10, 3 );
 
-add_filter( 'woocommerce_order_item_get_formatted_meta_data', function( $formatted_meta, $item ) {
-
-	foreach ( $formatted_meta as $meta ) {
-
-		if ( $meta->key === POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA) {
-			$meta->display_value = '<img src="' . esc_url($meta->value) . '" style="max-width:150px;border:1px solid #ddd;" />';
+add_filter('woocommerce_order_item_get_formatted_meta_data', function($formatted_meta, $item) {
+	foreach ($formatted_meta as $meta) {
+		if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA) {
+			$meta->display_value = $meta->value;
 		}
 	}
-
 	return $formatted_meta;
-
 }, 10, 2 );
 
-add_filter( 'woocommerce_order_item_display_meta_value', function( $value, $meta ) {
-
-	if ( $meta->key === POTISKARIUM_PLUGIN_UPLOADED_FILE_DATA ) {
-		return '<img src="' . esc_url( $meta->value ) . '" style="max-width:150px;border:1px solid #ddd;" />';
+add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) {
+	if ($meta->key === POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA ) {
+		return $meta->value;
 	}
-
 	return $value;
-
 }, 10, 2 );
 
-/**
- * Enqueue block cart script for custom print image
- */
-add_action( 'wp_enqueue_scripts', function() {
-
-	if ( class_exists('Automattic\WooCommerce\Blocks\Assets') ) {
-
-		wp_enqueue_script(
-			'custom-print-cart-block',
-			plugin_dir_url(__FILE__) . 'custom-print-cart-block/custom-print-cart-image.js',
-			[ 'wc-blocks-checkout', 'wc-settings' ],
-			filemtime( plugin_dir_path(__FILE__) . 'custom-print-cart-block/custom-print-cart-image.js' ),
-			true
-		);
-	}
-
-});

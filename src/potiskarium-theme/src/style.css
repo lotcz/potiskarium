@@ -99,7 +99,7 @@ button:focus {
 .product-categories-menu ul.product-categories-submenu {
 	background-color: var(--secondary-brand-color);
 	display: none;
-	position: fixed;
+	position: absolute;
 	z-index: 10000000;
 }
 

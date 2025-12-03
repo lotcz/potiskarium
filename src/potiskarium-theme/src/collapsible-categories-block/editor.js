@@ -7,7 +7,7 @@ import ServerSideRender from '@wordpress/server-side-render';
 registerBlockType('potiskarium-theme/collapsible-categories-block', {
 	edit: ( { attributes, setAttributes } ) => {
 		const blockProps = useBlockProps();
-		const { hideEmpty, hideDefault, showDefaultLast, showProductCounts } = attributes;
+		const { hideEmpty, hideDefault, showDefaultLast, showProductCounts, startExpanded } = attributes;
 
 		return (
 			<>
@@ -33,6 +33,11 @@ registerBlockType('potiskarium-theme/collapsible-categories-block', {
 							label={ __( 'Show Default Category Last') }
 							checked={ showDefaultLast }
 							onChange={ (value) => setAttributes({showDefaultLast: value }) }
+						/>
+						<ToggleControl
+							label={ __( 'Start With All Items Expanded') }
+							checked={ startExpanded }
+							onChange={ (value) => setAttributes({startExpanded: value }) }
 						/>
 					</div>
 				</InspectorControls>

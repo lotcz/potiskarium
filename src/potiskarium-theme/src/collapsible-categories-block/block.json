@@ -22,6 +22,10 @@
 		"showDefaultLast": {
 			"type": "boolean",
 			"default": true
+		},
+		"startExpanded": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

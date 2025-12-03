@@ -4,11 +4,12 @@
 
 	$showProductCounts = $attributes['showProductCounts'];
 	$hideEmpty = $attributes['hideEmpty'];
+	$startExpanded = $attributes['startExpanded'];
 	$hideDefault = $attributes['hideDefault'];
 	$showDefaultLast = $attributes['showDefaultLast'];
 	$defaultId = ($hideDefault || $showDefaultLast) ? get_option('default_product_cat') : null;
 
-	$renderItemFunction = function($tree, $hideEmpty, $showCounts) {
+	$renderItemFunction = function($tree, $hideEmpty, $showCounts, $startExpanded) {
 		$category = $tree->category;
 		?>
 		<li class="collapsible-category-item <?php echo $tree->isActive() ? 'active' : '' ?>">
@@ -34,7 +35,7 @@
 					}
 				?>
 			</a>
-			<?php collapsible_menu_render_children($tree, $hideEmpty, $showCounts); ?>
+			<?php collapsible_menu_render_children($tree, $hideEmpty, $showCounts, $startExpanded); ?>
 		</li>
 		<?php
 	}
@@ -56,11 +57,11 @@
 						$defaultCatTree = $subtree;
 						continue;
 					}
-					$renderItemFunction($subtree, $hideEmpty, $showProductCounts);
+					$renderItemFunction($subtree, $hideEmpty, $showProductCounts, $startExpanded);
 				}
 
 				if (isset($defaultCatTree)) {
-					$renderItemFunction($defaultCatTree, $hideEmpty, $showProductCounts);
+					$renderItemFunction($defaultCatTree, $hideEmpty, $showProductCounts, $startExpanded);
 				}
 			?>
 		</ul>

@@ -81,14 +81,14 @@ class CategoryTree {
 
 }
 
-function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, bool $showCounts) {
+function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, bool $showCounts, bool $expanded) {
 	if (empty($tree->children)) return;
 	?>
 	<input
 		id="collapse-<?php echo $tree->category->term_id ?>"
 		name="collapse-<?php echo $tree->category->term_id ?>"
 		type="checkbox"
-		<?php echo ($tree->containsActive() || $tree->isActive()) ? 'checked' : '' ?>
+		<?php echo ($expanded || $tree->containsActive() || $tree->isActive()) ? 'checked' : '' ?>
 		class="collapsible-category-item-checkbox"
 	>
 	<ul class="collapsible-subcategories-list">
@@ -120,7 +120,7 @@ function collapsible_menu_render_children(CategoryTree $tree, bool $hideEmpty, b
 					}
 					?>
 				</a>
-				<?php collapsible_menu_render_children($subtree, $hideEmpty, $showCounts); ?>
+				<?php collapsible_menu_render_children($subtree, $hideEmpty, $showCounts, $expanded); ?>
 			</li>
 			<?php
 		}
