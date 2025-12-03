@@ -15,26 +15,19 @@ if (!defined( 'ABSPATH')) {
 	exit;
 }
 
-if (!defined('POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META')) {
-	define('POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META', '_potiskarium_allow_custom_print');
-}
-
-if (!defined('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA')) {
-	define('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA', 'potiskarium_uploaded_custom_item_data');
-}
-
 add_action( 'before_woocommerce_init', function() {
 	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 	}
 });
 
-add_action(
-	'init',
-	function() {
-		register_block_type(__DIR__ . '/potiskarium-designer');
-	}
-);
+/*
+ *	CATEGORY WITH CUSTOM IMAGE
+ */
+
+if (!defined('POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META')) {
+	define('POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META', '_potiskarium_allow_custom_print');
+}
 
 function potiskarium_plugin_category_form_uploads_field(mixed $term) {
 	$enabled = empty($term) || is_string($term) ? 0 : get_term_meta( $term->term_id, POTISKARIUM_PLUGIN_ALLOW_UPLOADS_META, true );
@@ -85,6 +78,14 @@ function product_supports_custom_print($product_id): bool {
 	return false;
 }
 
+/*
+ * PRODUCTS WITH PRINT IMAGE
+ */
+
+if (!defined('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA')) {
+	define('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA', 'potiskarium_uploaded_custom_item_data');
+}
+
 add_action('woocommerce_before_add_to_cart_button', function() {
 	global $product;
 	if (!product_supports_custom_print($product->get_id())) return;
@@ -92,7 +93,7 @@ add_action('woocommerce_before_add_to_cart_button', function() {
 	<p class="custom-upload-wrapper">
     	<label for="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>">Nahrajte obrázek pro potisk:</label>
 		<input type="hidden" name="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" id="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" />
-		<button class="potiskarium-designer-btn" type="button">Designer</button>
+		<button class="potiskarium-designer-btn wp-element-button" type="button">Designer</button>
 	</p>
 	<?php
 });
@@ -101,7 +102,6 @@ add_filter( 'woocommerce_add_to_cart_validation', function($passed, $product_id)
 	if (!product_supports_custom_print($product_id)) {
 		return $passed;
 	}
-
 	if (empty($_POST[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]) ) {
 		wc_add_notice('Nahrajte obrázek pro potisk.', 'error');
 		return false;
@@ -113,13 +113,11 @@ add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_
 	if (!product_supports_custom_print($product_id ) ) {
 		return $cart_item_data;
 	}
-
 	if (isset($_POST['POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA'])) {
 		$cart_item_data[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA] = $_POST['POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA'];
 	} else {
 		wc_add_notice('No design data posted', 'error');
 	}
-
 	return $cart_item_data;
 }, 10, 2 );
 
@@ -155,3 +153,30 @@ add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) 
 	return $value;
 }, 10, 2 );
 
+/*
+ * DESIGNER
+ */
+
+add_action(
+	'wp_enqueue_scripts',
+	function() {
+		wp_enqueue_style(
+			'potiskarium-designer-style',
+			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.css',
+			null,
+			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.css')
+		);
+	}
+);
+
+add_action(
+	'wp_enqueue_scripts',
+	function() {
+		wp_enqueue_script(
+			'potiskarium-designer-script',
+			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.js',
+			['wc-blocks'],
+			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.js')
+		);
+	}
+);
