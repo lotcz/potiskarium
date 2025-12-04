@@ -40,23 +40,21 @@ async function potiskarium_designer_save() {
 
 	const item_key = designer.dataset.item_key;
 	if (item_key) {
-		const response = await fetch(
-			PotiskariumDesigner.updateRestUrl,
-			{
-				method: 'PUT',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					key: item_key,
-					data: params
-				})
-			}
-		);
+		const { extensionCartUpdate } = wc.blocksCheckout;
+		const { processErrorResponse } = wc.wcBlocksData;
 
-		const result = await response.json();
-		console.log('Cart updated', result);
+		extensionCartUpdate( {
+			namespace: 'potiskarium-plugin',
+			data: {
+				key: item_key,
+				data: params
+			},
+		} ).then( () => {
+			// Cart has been updated.
+		} ).catch( ( error ) => {
+			// Handle error.
+			processErrorResponse(error);
+		} );
 	} else {
 		const input = document.getElementById('potiskarium_uploaded_custom_item_data');
 		if (input) {

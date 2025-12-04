@@ -163,62 +163,30 @@ add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) 
  * UPDATE CART ITEM
  */
 
-add_action( 'woocommerce_loaded', function() {
-	add_action('rest_api_init', function () {
-		register_rest_route('potiskarium-plugin/v1', '/update-cart-item', [
-			'methods' => 'PUT',
-			'callback' => 'potiskarium_plugin_update_cart_item',
-			'permission_callback' => '__return_true',
-		]);
-	});
-});
+add_action(
+	'woocommerce_blocks_loaded',
+	function() {
+		woocommerce_store_api_register_update_callback(
+			[
+				'namespace' => 'potiskarium-plugin',
+				'callback'  => function($data) {
+					$key = $data['key'];
+					$data = $data['data'];
 
-function potiskarium_plugin_update_cart_item(WP_REST_Request $request) {
-	// Force initialize WooCommerce
-	if ( ! did_action( 'woocommerce_init' ) ) {
-		WC();
+					if (!$key || !isset(WC()->cart->cart_contents[$key])) {
+						return new WP_Error('invalid_key', 'Invalid cart item key:' . $key, ['status' => 400]);
+					}
+
+					WC()->cart->cart_contents[$key][POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA] = json_encode($data);
+
+					// Recalculate totals
+					WC()->cart->calculate_totals();
+					WC()->cart->set_session();
+				}
+			]
+		);
 	}
-
-	// Manually initialize the session
-	if ( is_null( WC()->session ) || ! WC()->session->has_session() ) {
-		WC()->initialize_session();
-		WC()->initialize_cart();
-	}
-
-	// Get cart from session
-	$cart = WC()->cart;
-
-	if ( ! $cart ) {
-		wc_load_cart();
-		$cart = WC()->cart;
-	}
-
-	// Force load from session
-	$cart->get_cart_from_session();
-
-	WC()->cart->get_cart();
-
-	error_log( 'Cart contents count: ' . count( $cart->cart_contents ) );
-	error_log( 'Session customer ID: ' . WC()->session->get_customer_id() );
-
-	$key = $request->get_param('key');
-	$data = $request->get_param('data');
-
-	if (!$key || !isset(WC()->cart->cart_contents[$key])) {
-		return new WP_Error('invalid_key', 'Invalid cart item key:' . $key . "\r\n" . print_r(WC()->cart->cart_contents, true), ['status' => 400]);
-	}
-
-	WC()->cart->cart_contents[$key][POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA] = json_encode($data);
-
-	// Recalculate totals
-	WC()->cart->calculate_totals();
-	WC()->cart->set_session();
-
-	return [
-		'success' => true,
-		'item' => WC()->cart->cart_contents[$key],
-	];
-}
+);
 
 /*
  * DESIGNER AND PREVIEW
@@ -246,8 +214,9 @@ add_action(
 		wp_enqueue_script(
 			'potiskarium-designer-script',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-designer.js',
-			[ ],
-			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.js')
+			[ 'wc-blocks-checkout' ],
+			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-designer.js'),
+			true
 		);
 
 		wp_localize_script(
@@ -264,7 +233,8 @@ add_action(
 			'potiskarium-preview-jscript',
 			plugin_dir_url( __FILE__ ) . 'potiskarium-preview.js',
 			[ 'wc-blocks-checkout' ],
-			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-preview.js')
+			filemtime(plugin_dir_path(__FILE__) . 'potiskarium-preview.js'),
+			true
 		);
 
 	}
