@@ -159,10 +159,7 @@ add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) 
 	return $value;
 }, 10, 2 );
 
-/*
- * UPDATE CART ITEM
- */
-
+/* update cart item data */
 add_action(
 	'woocommerce_blocks_loaded',
 	function() {
