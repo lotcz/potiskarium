@@ -37,27 +37,32 @@ async function potiskarium_designer_save() {
 		preview_image: designer.dataset.preview_image
 	}
 	const value = JSON.stringify(params);
-	const input = document.getElementById('potiskarium_uploaded_custom_item_data');
-	if (input) {
-		input.value = value;
-		potiskarium_preview_init();
-	} else {
+
+	const item_key = designer.dataset.item_key;
+	if (item_key) {
 		const response = await fetch(
-			'/wp-json/wc/store/cart/update-item',
+			PotiskariumDesigner.updateRestUrl,
 			{
-				method: 'POST',
+				method: 'PUT',
+				credentials: 'include',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					key: '???',
-					potiskarium_uploaded_custom_item_data: value
+					key: item_key,
+					data: params
 				})
 			}
 		);
 
 		const result = await response.json();
 		console.log('Cart updated', result);
+	} else {
+		const input = document.getElementById('potiskarium_uploaded_custom_item_data');
+		if (input) {
+			input.value = value;
+			potiskarium_preview_init();
+		}
 	}
 }
 
@@ -203,6 +208,9 @@ function potiskarium_designer_show(params) {
 	if (params.custom_image) {
 		potiskarium_designer_set_custom_file(params.custom_image ? params.custom_image : '');
 	}
+	if (params.item_key) {
+		designer.dataset.item_key = params.item_key;
+	}
 }
 
 function potiskarium_designer_init() {
@@ -210,11 +218,7 @@ function potiskarium_designer_init() {
 		(btn) => {
 			btn.addEventListener(
 				"click",
-				() => potiskarium_designer_show(
-					{
-						param: 'test'
-					}
-				)
+				() => potiskarium_designer_show({})
 			);
 		}
 	);

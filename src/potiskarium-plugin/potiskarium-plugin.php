@@ -125,9 +125,13 @@ add_filter('woocommerce_add_cart_item_data', function($cart_item_data, $product_
 
 add_filter('woocommerce_get_item_data', function($item_data, $cart_item) {
 	if (isset($cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA])) {
+		$orig = $cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA];
+		$json = str_replace("\\\"", "\"", $orig);
+		$params = empty($orig) ? [] : json_decode($json, true);
+		$params['item_key'] = $cart_item['key'];
 		$item_data[] = [
 			'name'  => 'Vlastní potisk',
-			'value' => $cart_item[POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA]
+			'value' => json_encode($params)
 		];
 	}
 	return $item_data;
@@ -154,6 +158,67 @@ add_filter('woocommerce_order_item_display_meta_value', function($value, $meta) 
 	}
 	return $value;
 }, 10, 2 );
+
+/*
+ * UPDATE CART ITEM
+ */
+
+add_action( 'woocommerce_loaded', function() {
+	add_action('rest_api_init', function () {
+		register_rest_route('potiskarium-plugin/v1', '/update-cart-item', [
+			'methods' => 'PUT',
+			'callback' => 'potiskarium_plugin_update_cart_item',
+			'permission_callback' => '__return_true',
+		]);
+	});
+});
+
+function potiskarium_plugin_update_cart_item(WP_REST_Request $request) {
+	// Force initialize WooCommerce
+	if ( ! did_action( 'woocommerce_init' ) ) {
+		WC();
+	}
+
+	// Manually initialize the session
+	if ( is_null( WC()->session ) || ! WC()->session->has_session() ) {
+		WC()->initialize_session();
+		WC()->initialize_cart();
+	}
+
+	// Get cart from session
+	$cart = WC()->cart;
+
+	if ( ! $cart ) {
+		wc_load_cart();
+		$cart = WC()->cart;
+	}
+
+	// Force load from session
+	$cart->get_cart_from_session();
+
+	WC()->cart->get_cart();
+
+	error_log( 'Cart contents count: ' . count( $cart->cart_contents ) );
+	error_log( 'Session customer ID: ' . WC()->session->get_customer_id() );
+
+	$key = $request->get_param('key');
+	$data = $request->get_param('data');
+
+	if (!$key || !isset(WC()->cart->cart_contents[$key])) {
+		return new WP_Error('invalid_key', 'Invalid cart item key:' . $key . "\r\n" . print_r(WC()->cart->cart_contents, true), ['status' => 400]);
+	}
+
+	WC()->cart->cart_contents[$key][POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA] = json_encode($data);
+
+	// Recalculate totals
+	WC()->cart->calculate_totals();
+	WC()->cart->set_session();
+
+	return [
+		'success' => true,
+		'item' => WC()->cart->cart_contents[$key],
+	];
+}
 
 /*
  * DESIGNER AND PREVIEW
@@ -190,7 +255,8 @@ add_action(
 			'PotiskariumDesigner',
 			[
 				'uploadRestUrl' => rest_url('wp/v2/media'),
-				'nonce'   => wp_create_nonce('wp_rest'),
+				'updateRestUrl' => rest_url('potiskarium-plugin/v1/update-cart-item'),
+				'nonce' => wp_create_nonce('wp_rest')
 			]
 		);
 
