@@ -6,7 +6,7 @@
  * Author: Karel
  * Text Domain: potiskarium-plugin
  * Requires at least: 6.0
- * Requires PHP: 8.4
+ * Requires PHP: 8.2
  * WC requires at least: 8.0
  * WC tested up to: 9.0
  */
