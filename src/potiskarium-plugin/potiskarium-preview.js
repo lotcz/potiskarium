@@ -42,6 +42,8 @@ function potiskarium_preview_show(params, element) {
 }
 
 function potiskarium_preview_init() {
+
+	// product detail form
 	const hiddenInput = document.getElementById("potiskarium_uploaded_custom_item_data");
 	if (hiddenInput) {
 		const data = hiddenInput.value;
@@ -54,8 +56,9 @@ function potiskarium_preview_init() {
 			}
 		}
 	}
-	document
-		.querySelectorAll(".wc-block-components-product-details__value")
+
+	// cart items
+	document.querySelectorAll(".wc-block-components-product-details__value")
 		.forEach(
 			(element) => {
 				const data = element.innerText;
@@ -66,6 +69,31 @@ function potiskarium_preview_init() {
 				}
 			}
 		);
+
+	// add to cart button
+	document.querySelectorAll(".potiskarium-product-add-to-cart")
+		.forEach(
+			(element) => {
+				const url = element.dataset.product_detail_url;
+				console.log(url);
+				if (url) {
+					console.log('adding');
+					const button = document.createElement('button');
+					button.innerText = 'Zvolit vlastní potisk...';
+					button.classList.add('wp-element-button');
+					button.addEventListener(
+						'click',
+						(e) => {
+							e.stopPropagation();
+							e.preventDefault();
+							document.location.href = url;
+						}
+					);
+					element.replaceWith(button);
+				}
+			}
+		);
+
 }
 
 document.addEventListener("DOMContentLoaded", () => potiskarium_preview_init());

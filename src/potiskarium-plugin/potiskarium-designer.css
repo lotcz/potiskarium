@@ -1,3 +1,27 @@
+/*
+	PREVIEW
+ */
+
+.custom-upload-wrapper {
+	margin-bottom: 1rem;
+}
+
+.custom-upload-wrapper label {
+	margin: 0 !important;
+}
+
+.custom-upload-wrapper,
+.wc-block-order-confirmation-totals table .wc-item-meta li,
+.wc-block-components-product-details__vlastn-potisk {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+/*
+	DESIGNER
+ */
+
 #potiskarium_designer.designer-overlay {
 	position: fixed;
 	inset: 0;
@@ -12,11 +36,9 @@
 	background: white;
 	padding: 20px;
 	border-radius: 12px;
-	min-width: 300px;
-	max-width: 90%;
-	position: relative;
 	display: flex;
 	flex-direction: column;
+	justify-content: stretch;
 	gap: 1rem;
 }
 
@@ -35,18 +57,21 @@
 #potiskarium_designer .designer-body {
 	display: flex;
 	gap: 1rem;
+	min-height: 0;
 }
 
 #potiskarium_designer .designer-custom-image,
 #potiskarium_designer .designer-preview-image {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: stretch;
 	gap: 1rem;
+	min-height: 0;
 }
 
 #potiskarium_designer .designer-custom-image-wrapper,
 #potiskarium_designer .designer-preview-image-wrapper {
+	min-height: 0;
 	width: 300px;
 	height: 300px;
 	display: flex;
@@ -68,25 +93,6 @@
 	justify-content: space-around;
 }
 
-/*
-	PREVIEW
- */
-
-.custom-upload-wrapper {
-	margin-bottom: 1rem;
-}
-
-.custom-upload-wrapper label {
-	margin: 0 !important;
-}
-
-.custom-upload-wrapper,
-.wc-block-order-confirmation-totals table .wc-item-meta li,
-.wc-block-components-product-details__vlastn-potisk {
-	display: flex;
-	gap: 10px;
-	align-items: center;
-}
 
 .potiskarium-design-preview {
 	display: flex;
@@ -102,4 +108,51 @@
 .potiskarium-design-preview .custom-image-wrapper img {
 	max-width: 100%;
 	max-height: 100%;
+}
+
+/* Small devices (landscape phones) */
+@media (max-height: 558.98px) or (max-width: 700.98px) {
+
+	#potiskarium_designer .designer-wrapper {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		justify-content: space-between;
+	}
+
+	#potiskarium_designer .designer-body {
+		flex: 1;
+		align-items: stretch;
+	}
+
+	#potiskarium_designer h2,
+	#potiskarium_designer h3 {
+		font-size: 75%;
+	}
+
+
+	#potiskarium_designer .designer-custom-image,
+	#potiskarium_designer .designer-preview-image {
+		flex: 1;
+	}
+
+	#potiskarium_designer .designer-custom-image-wrapper,
+	#potiskarium_designer .designer-preview-image-wrapper {
+		max-width: 100%;
+		width: auto;
+		max-height: 100%;
+		height: auto;
+		flex: 1;
+	}
+}
+
+/* Small devices (potrait phones) */
+@media (max-width: 400.98px) {
+
+	#potiskarium_designer .designer-body {
+		flex-direction: column;
+	}
+
 }

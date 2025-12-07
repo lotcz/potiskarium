@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Potiskarium Plugin
  * Description: Allows image uploads to certain product types and lets user generate AI preview
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Karel
  * Text Domain: potiskarium-plugin
  * Requires at least: 6.0
@@ -94,7 +94,7 @@ add_action('woocommerce_before_add_to_cart_button', function() {
     	<label for="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>">Obrázek pro vlastní potisk:</label>
 		<input type="hidden" name="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" id="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" />
 		<div class="custom-upload-preview">
-			<button class="potiskarium-designer-btn wp-element-button" type="button">Nahrát vlastní obrázek</button>
+			<button class="potiskarium-designer-btn wp-element-button" type="button">Nahrát vlastní obrázek...</button>
 		</div>
 	</div>
 	<?php
@@ -179,11 +179,37 @@ add_action(
 					// Recalculate totals
 					WC()->cart->calculate_totals();
 					WC()->cart->set_session();
+
+					return $data;
 				}
 			]
 		);
 	}
 );
+
+/*
+ * MODIFY ADD TO CART BUTTON
+ */
+
+add_filter('woocommerce_product_add_to_cart_url', 'custom_loop_add_to_cart_url', 10, 2);
+function custom_loop_add_to_cart_url($url, $product) {
+	if (product_supports_custom_print($product->get_id())) {
+		return get_permalink($product->get_id());
+	}
+	return $url;
+}
+
+/**
+ * Add custom data attributes to products in the loop
+ */
+add_filter('woocommerce_loop_add_to_cart_args', 'custom_loop_add_to_cart_args', 10, 2);
+function custom_loop_add_to_cart_args($args, $product) {
+	if (product_supports_custom_print($product->get_id())) {
+		$args['class'] = $args['class'] . ' potiskarium-product-add-to-cart';
+		$args['attributes']['data-product_detail_url'] = get_permalink($product->get_id());
+	}
+	return $args;
+}
 
 /*
  * DESIGNER AND PREVIEW
