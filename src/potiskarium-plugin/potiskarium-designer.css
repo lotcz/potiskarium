@@ -6,6 +6,10 @@
 	margin-bottom: 1rem;
 }
 
+.custom-upload-wrapper img {
+	cursor: pointer;
+}
+
 .custom-upload-wrapper label {
 	margin: 0 !important;
 }
@@ -113,6 +117,11 @@
 /* Small devices (landscape phones) */
 @media (max-height: 558.98px) or (max-width: 700.98px) {
 
+	.custom-upload-wrapper {
+		flex-direction: column;
+		align-items: start;
+	}
+
 	#potiskarium_designer .designer-wrapper {
 		position: absolute;
 		top: 0;
@@ -120,6 +129,8 @@
 		left: 0;
 		right: 0;
 		justify-content: space-between;
+		padding: 10px;
+		gap: 10px;
 	}
 
 	#potiskarium_designer .designer-body {
@@ -130,8 +141,12 @@
 	#potiskarium_designer h2,
 	#potiskarium_designer h3 {
 		font-size: 75%;
+		font-weight: bold;
 	}
 
+	#potiskarium_designer h2 {
+		font-size: 85%;
+	}
 
 	#potiskarium_designer .designer-custom-image,
 	#potiskarium_designer .designer-preview-image {
@@ -145,6 +160,7 @@
 		max-height: 100%;
 		height: auto;
 		flex: 1;
+		padding: 0;
 	}
 }
 

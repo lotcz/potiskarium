@@ -27,17 +27,13 @@ function potiskarium_preview_show(params, element) {
 		img.setAttribute('src', params.custom_image);
 	}
 	customImageWrapper.appendChild(img);
+	img.addEventListener('click', async () => potiskarium_designer_show(params));
 
 	const btn = document.createElement('button');
 	btn.setAttribute('type', 'button');
 	btn.classList.add('wp-element-button');
-	btn.innerText = 'Upravit';
-	btn.addEventListener(
-		'click',
-		async () => {
-			potiskarium_designer_show(params)
-		}
-	);
+	btn.innerText = 'Upravit...';
+	btn.addEventListener('click', async () => potiskarium_designer_show(params));
 	wrapper.appendChild(btn);
 }
 

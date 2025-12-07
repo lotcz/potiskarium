@@ -15,8 +15,9 @@ async function potiskarium_designer_upload_file(file) {
 
 	const res = await fetch(PotiskariumDesigner.uploadRestUrl, {
 		method: 'POST',
+		credentials: "same-origin",
 		headers: {
-			'X-WP-Nonce': PotiskariumDesigner.nonce,
+			'Nonce': PotiskariumDesigner.uploadNonce,
 			'Content-Disposition': `attachment; filename="${file.name}"`,
 		},
 		body: formData
@@ -143,7 +144,7 @@ function potiskarium_designer_show(params) {
 			try {
 				potiskarium_designer_set_custom_file(null);
 				const uploaded = await potiskarium_designer_upload_file(file);
-				potiskarium_designer_set_custom_file(uploaded.source_url);
+				potiskarium_designer_set_custom_file(uploaded.url);
 			} catch (err) {
 				console.error(err);
 			}

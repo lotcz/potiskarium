@@ -188,6 +188,99 @@ add_action(
 );
 
 /*
+ * CUSTOM UPLOAD
+ */
+
+add_action(
+	'rest_api_init',
+	function() {
+		register_rest_route(
+			'potiskarium-plugin/v1',
+			'/image',
+			[
+				'methods' => 'POST',
+				'callback' => 'potiskarium_handle_upload',
+				'permission_callback' => '__return_true',
+			]
+		);
+	}
+);
+
+function potiskarium_handle_upload(WP_REST_Request $request) {
+
+	// Check Nonce
+	$nonce = $request->get_header('Nonce');
+	if (!$nonce) {
+		$nonce = $request->get_param('nonce');
+	}
+
+	if (!$nonce) {
+		return new WP_Error(
+			'missing_nonce',
+			'Missing nonce.',
+			['status' => 403]
+		);
+	}
+/*
+	if (!wp_verify_nonce($nonce, 'potiskarium_upload_nonce')) {
+		return new WP_Error(
+			'invalid_nonce',
+			'Invalid or expired nonce.',
+			['status' => 403]
+		);
+	}
+*/
+	// 2. File validation
+	if (empty($_FILES['file'])) {
+		return new WP_Error('no_file', 'No file uploaded.', ['status' => 400]);
+	}
+
+	$file = $_FILES['file'];
+
+	$allowed_types = [
+		'image/jpeg',
+		'image/png',
+		'image/gif',
+		'image/webp'
+	];
+
+	if (!in_array($file['type'], $allowed_types)) {
+		return new WP_Error('invalid_type', 'Invalid file type.', ['status' => 400]);
+	}
+
+	if ($file['size'] > 20 * 1024 * 1024) {
+		return new WP_Error('file_too_large', 'File too large.', ['status' => 400]);
+	}
+
+	// 3. Upload handling
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	$uploaded = wp_handle_upload($file, ['test_form' => false]);
+
+	if (isset($uploaded['error'])) {
+		return new WP_Error('upload_error', $uploaded['error'], ['status' => 500]);
+	}
+
+	// 4. Insert to Media Library
+	$attachment_id = wp_insert_attachment([
+		'post_mime_type' => $uploaded['type'],
+		'post_title' => sanitize_file_name($file['name']),
+		'post_status' => 'inherit'
+	], $uploaded['file']);
+
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	wp_update_attachment_metadata(
+		$attachment_id,
+		wp_generate_attachment_metadata($attachment_id, $uploaded['file'])
+	);
+
+	return [
+		'success' => true,
+		'id' => $attachment_id,
+		'url' => wp_get_attachment_url($attachment_id)
+	];
+}
+
+/*
  * MODIFY ADD TO CART BUTTON
  */
 
@@ -246,9 +339,8 @@ add_action(
 			'potiskarium-designer-script',
 			'PotiskariumDesigner',
 			[
-				'uploadRestUrl' => rest_url('wp/v2/media'),
-				'updateRestUrl' => rest_url('potiskarium-plugin/v1/update-cart-item'),
-				'nonce' => wp_create_nonce('wp_rest')
+				'uploadRestUrl' => rest_url('potiskarium-plugin/v1/image'),
+				'uploadNonce' => wp_create_nonce('potiskarium_upload_nonce')
 			]
 		);
 
