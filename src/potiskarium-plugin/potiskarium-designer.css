@@ -15,11 +15,27 @@
 }
 
 .custom-upload-wrapper,
+.potiskarium-design-preview,
 .wc-block-order-confirmation-totals table .wc-item-meta li,
 .wc-block-components-product-details__vlastn-potisk {
 	display: flex;
 	gap: 10px;
 	align-items: center;
+	flex-wrap: wrap;
+}
+
+.potiskarium-design-preview .custom-image-wrapper {
+	max-width: 100px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.potiskarium-design-preview .custom-image-wrapper img {
+	max-width: 100%;
+	max-height: 100%;
 }
 
 /*
@@ -95,23 +111,6 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
-}
-
-
-.potiskarium-design-preview {
-	display: flex;
-	gap: 10px;
-	align-items: center;
-}
-
-.potiskarium-design-preview .custom-image-wrapper {
-	max-width: 100px;
-	height: 50px;
-}
-
-.potiskarium-design-preview .custom-image-wrapper img {
-	max-width: 100%;
-	max-height: 100%;
 }
 
 /* Small devices (landscape phones) */
