@@ -38,7 +38,7 @@ class Comgate_Gateway_Blocks extends AbstractPaymentMethodType {
                 'wc-blocks-registry',
                 'wc-settings',
             ],
-            '2.5',
+            filemtime(plugin_dir_path(__FILE__) . '../payment-gateway-block/block.js'),
             true
         );
 

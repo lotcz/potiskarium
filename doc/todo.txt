@@ -1,7 +1,9 @@
 FUNC
 
-- rozbalovací menu
+- ikony a popis ComGate
 - formulář na vlastní potisk,
+- mobilni verze
+  - predelat menu
 - test prod comgate
 
 

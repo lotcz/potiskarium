@@ -37,7 +37,6 @@ const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 		<div>
 			<div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
 				<img src={imagesUrl + 'visa.png'} alt="VISA"/>
-				<img src={imagesUrl + 'maestro.png'} alt="Maestro"/>
 				<img src={imagesUrl + 'mastercard.png'} alt="Mastercard"/>
 				<img src={imagesUrl + 'apple-pay.png'} alt="Apple Pay"/>
 				<img src={imagesUrl + 'google-pay.png'} alt="Google Pay"/>
