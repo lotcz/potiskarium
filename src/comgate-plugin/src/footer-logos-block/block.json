@@ -1,0 +1,17 @@
+{
+	"apiVersion": 3,
+	"name": "comgate-plugin/footer-logos-block",
+	"title": "Comgate Footer Logos",
+	"category": "widgets",
+	"icon": "format-image",
+	"editorScript": "file:./block.js",
+	"attributes": {
+		"variant": {
+			"type": "string",
+			"default": "light"
+		}
+	},
+	"supports": {
+		"html": false
+	}
+}

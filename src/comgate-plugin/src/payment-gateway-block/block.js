@@ -43,9 +43,7 @@ const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 			</div>
 			<p>{description}</p>
 			{isProcessing && (
-				<div className="comgate-processing">
-					<span>Preparing payment...</span>
-				</div>
+				<div><span>Preparing payment...</span></div>
 			)}
 		</div>
 	);

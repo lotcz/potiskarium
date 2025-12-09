@@ -1,11 +1,9 @@
 FUNC
 
-- ikony a popis ComGate
-- formulář na vlastní potisk,
+- formulář na vlastní potisk
+  - AI preview
 - mobilni verze
   - predelat menu
-- test prod comgate
-
 
 NEEDED INFO
 

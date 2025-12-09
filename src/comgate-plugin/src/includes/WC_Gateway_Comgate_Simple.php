@@ -103,6 +103,13 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 				'label' => __('Enable ComGate Gateway', 'karel'),
 				'default' => 'yes'
 			),
+			'test_mode' => array(
+				'title' => __('Test mode', 'karel'),
+				'type' => 'checkbox',
+				'label' => __('Use Woocommerce test mode', 'karel'),
+				'description' => __('Orders will be marked as paid in test mode.', 'karel'),
+				'default' => 'yes',
+			),
 			'use_mock_page' => array(
 				'title' => __('Use mock payment page', 'karel'),
 				'type' => 'checkbox',
@@ -211,11 +218,15 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 			return;
 		}
 
-		$api_url = $this->use_mock_page ? rest_url('comgate-mock-api/v2/status') : 'https://payments.comgate.cz/v2.0/status';
-		$api_url = add_query_arg(array('transId' => $transId), $api_url);
+		if ($this->use_mock_page) {
+			$api_url = rest_url('comgate-mock-api/v2/status');
+			$api_url = add_query_arg(array('transId' => $transId), $api_url);
+		} else {
+			$api_url = "https://payments.comgate.cz/v2.0/payment/transId/$transId.json";
+		}
 
 		if ($this->debug_mode) {
-			error_log('Check order status URL: ' . $api_url);
+			error_log("Checking order status. URL: $api_url, Auth: $this->authorization_header");
 		}
 
 		// Check status
@@ -233,8 +244,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		);
 
 		if (is_wp_error($response)) {
-			$error_message = 'ComGate API error: ' . $response->get_error_message();
-			error_log($error_message);
+			error_log('ComGate API error: ' . $response->get_error_message());
 			return;
 		}
 
@@ -244,8 +254,7 @@ class WC_Gateway_Comgate_Simple extends WC_Payment_Gateway {
 		$data = json_decode($body, true);
 
 		if (json_last_error() !== JSON_ERROR_NONE) {
-			$error_message = "Invalid JSON returned by ComGate API: $body";
-			error_log($error_message);
+			error_log("Invalid JSON returned by ComGate API: $body");
 			return;
 		}
 

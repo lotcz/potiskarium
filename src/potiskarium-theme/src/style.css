@@ -15,6 +15,25 @@
 	--secondary-brand-color-highlight: #b378c6;
 }
 
+.wp-block-potiskarium-theme-logo-block {
+	display: flex;
+	align-items: center;
+}
+
+.potiskarium-logo {
+	display: block;
+	max-width: 100%;
+	overflow: hidden;
+}
+
+.potiskarium-logo img {
+	max-width: 100%;
+}
+
+.woocommerce-tabs h2 {
+	display: none;
+}
+
 .woocommerce-cart .wp-block-post-title {
 	max-width: var(--wp--style--global--wide-size) !important;
 }
@@ -261,4 +280,16 @@ button:focus {
 		z-index: 9999;
 	}
 
+	.has-global-padding {
+		padding-right: 15px !important;
+		padding-left: 15px !important;
+	}
+
+	.woocommerce div.product div.images {
+		margin-bottom: 0;
+	}
+
+	.wp-block-comgate-plugin-footer-logos-block {
+		padding-top: 20px;
+	}
 }

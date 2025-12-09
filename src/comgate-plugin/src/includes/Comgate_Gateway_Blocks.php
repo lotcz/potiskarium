@@ -60,7 +60,7 @@ class Comgate_Gateway_Blocks extends AbstractPaymentMethodType {
             'title' => $this->get_setting('title'),
             'description' => $this->get_setting('description'),
             'supports' => array_filter($this->gateway->supports, array($this->gateway, 'supports')),
-            'test_mode' => $this->get_setting('test_mode') === 'yes',
+            'test_mode' => $this->get_setting('test_payments') === 'yes',
         );
     }
 }

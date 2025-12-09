@@ -2,13 +2,14 @@
 /**
  * Plugin Name: ComGate Gateway
  * Description: Simple ComGate payment gateway for WooCommerce
- * Version: 2.0.0
+ * Version: 2.1.1
  * Author: Karel
  * Text Domain: karel-comgate-gateway
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * WC requires at least: 8.0
  * WC tested up to: 9.0
+ * Requires Plugins: woocommerce
  */
 
 use src\includes\Comgate_Gateway_Blocks;
@@ -37,9 +38,12 @@ function karel_comgate_plugin_add_gateway($gateways) {
 
 function karel_comgate_plugin_init() {
 	if (!class_exists('WC_Payment_Gateway')) {
-		add_action( 'admin_notices', function() {
-			echo '<div class="error"><p><strong>ComGate Payment Gateway</strong> requires WooCommerce to be installed and active.</p></div>';
-		} );
+		add_action(
+			'admin_notices',
+			function() {
+				echo '<div class="error"><p><strong>ComGate Payment Gateway</strong> requires WooCommerce to be installed and active.</p></div>';
+			}
+		);
 		return;
 	}
 
@@ -84,6 +88,7 @@ function karel_comgate_plugin_register_mock_page() {
 }
 
 add_action('init', function() {
+	register_block_type(__DIR__ . '/footer-logos-block');
 	karel_comgate_plugin_register_mock_page();
 });
 

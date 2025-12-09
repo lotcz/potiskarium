@@ -54,7 +54,7 @@ registerBlockType( 'potiskarium-theme/logo-block', {
 					</div>
 				</InspectorControls>
 
-				<div {...blockProps }>
+				<div className="potiskarium-logo" {...blockProps }>
 					<img
 						src={potiskariumLogoUrl(variant)}
 						alt="potiskarium-logo"
@@ -69,7 +69,7 @@ registerBlockType( 'potiskarium-theme/logo-block', {
 		const { variant, maxHeight } = attributes;
 
 		return <div {...blockProps}>
-			<a href="/">
+			<a href="/" className="potiskarium-logo">
 				<img
 					src={potiskariumLogoUrl(variant)}
 					alt="Potiskarium"
