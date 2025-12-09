@@ -19,10 +19,7 @@
 					<?php
 						if ($tree->hasChildren() && ($tree->containsNonEmptyChild() || !$hideEmpty)) {
 							?>
-							<label
-								class="collapsible-category-item-checkbox-label"
-								for="collapsible_menu_item_<?php echo $category->term_id ?>"
-							></label>
+							<div class="collapsible-category-item-checkbox-label"></div>
 							<?php
 						}
 					?>

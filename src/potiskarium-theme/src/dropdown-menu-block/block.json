@@ -1,0 +1,35 @@
+{
+	"apiVersion": 3,
+	"name": "potiskarium-theme/dropdown-menu-block",
+	"title": "Potiskarium Dropdown Menu",
+	"category": "potiskarium-theme-blocks",
+	"icon": "list-view",
+	"editorScript": "file:./editor.js",
+	"viewScript": "file:../collapsible-categories-block/collapsible-menu.js",
+	"render": "file:./index.php",
+	"attributes": {
+		"showProductCounts": {
+			"type": "boolean",
+			"default": true
+		},
+		"hideEmpty": {
+			"type": "boolean",
+			"default": true
+		},
+		"hideDefault": {
+			"type": "boolean",
+			"default": true
+		},
+		"showDefaultLast": {
+			"type": "boolean",
+			"default": true
+		},
+		"startExpanded": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false
+	}
+}

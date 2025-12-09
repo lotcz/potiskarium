@@ -66,6 +66,7 @@ add_action('init', function () {
 	register_block_type(__DIR__ . '/logo-block');
 	register_block_type(__DIR__ . '/categories-menu-block');
 	register_block_type(__DIR__ . '/collapsible-categories-block');
+	register_block_type(__DIR__ . '/dropdown-menu-block');
 });
 
 add_action('enqueue_block_editor_assets', function() {

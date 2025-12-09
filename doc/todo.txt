@@ -2,8 +2,6 @@ FUNC
 
 - formulář na vlastní potisk
   - AI preview
-- mobilni verze
-  - predelat menu
 
 NEEDED INFO
 

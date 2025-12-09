@@ -4,15 +4,17 @@ document.addEventListener(
 		const collapsibleItems = document.querySelectorAll(":where(.collapsible-category-item, .collapsible-subcategory-item)");
 		collapsibleItems.forEach(
 			(collapsibleItem) => {
-				const input = collapsibleItem.querySelector("input.collapsible-category-item-checkbox");
-				if (input) {
+				const input = collapsibleItem.querySelector(".collapsible-category-item-checkbox-label");
+				if (input && input.dataset.initialized !== 'true') {
 					input.addEventListener(
-						"change",
+						"click",
 						(e) => {
-							const checked = e.target.checked;
-							collapsibleItem.classList.toggle("expanded", checked);
+							collapsibleItem.classList.toggle("expanded");
+							e.preventDefault();
+							e.stopPropagation();
 						}
 					);
+					input.dataset.initialized = 'true';
 				}
 			}
 		);

@@ -146,7 +146,8 @@ button:focus {
 
 .collapsible-categories-menu li.active > a,
 .collapsible-categories-menu li.active > a:hover {
-	font-weight: bold;
+	background-color: var(--secondary-brand-color) !important;
+	cursor: default;
 }
 
 .collapsible-categories-menu a {
@@ -165,16 +166,7 @@ button:focus {
 	gap: 10px;
 }
 
-.collapsible-categories-menu .collapsible-category-item-checkbox {
-	display: none;
-}
-
 .collapsible-categories-menu .collapsible-category-item-checkbox-label {
-	margin: 0;
-	padding: 0;
-}
-
-.collapsible-categories-menu .collapsible-category-item-checkbox-label:before {
 	display: block;
 	content: ' ';
 	background-image: url('img/plus.svg');
@@ -189,11 +181,11 @@ button:focus {
 	border-radius: 50%;
 }
 
-.collapsible-categories-menu .collapsible-category-item-checkbox-label:hover:before {
+.collapsible-categories-menu .collapsible-category-item-checkbox-label:hover {
 	background-color: rgba(255, 255, 255, 0.5);
 }
 
-.collapsible-categories-menu .expanded > a > div .collapsible-category-item-checkbox-label:before {
+.collapsible-categories-menu .expanded > a > div .collapsible-category-item-checkbox-label {
 	background-image: url('img/minus.svg');
 }
 
@@ -206,7 +198,7 @@ button:focus {
 	transition: max-height .35s ease, opacity .25s ease, transform .25s ease;
 }
 
-.collapsible-categories-menu input.collapsible-category-item-checkbox:checked + ul.collapsible-subcategories-list {
+.collapsible-categories-menu .expanded > ul.collapsible-subcategories-list {
 	max-height: 800px;
 	opacity: 1;
 	margin: initial;
@@ -234,7 +226,7 @@ button:focus {
 /* subcategories */
 
 .collapsible-categories-menu ul.collapsible-subcategories-list li {
-	background-color: var(--secondary-brand-color);
+	background-color: var(--brand-color);
 	margin: 5px;
 }
 
@@ -243,22 +235,74 @@ button:focus {
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list a:hover {
-	background-color: var(--secondary-brand-color-highlight);
+	background-color: var(--brand-color-highlight);
 }
 
 /* third level and more */
 
 .collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list li {
-	background-color: #ebbaff;
+	background-color: var(--brand-color);
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list a {
-	color: #1e1e1e;
 	padding: 5px 5px 5px 75px;
 }
 
 .collapsible-categories-menu ul.collapsible-subcategories-list .collapsible-subcategories-list a:hover {
-	background-color: rgba(255, 255, 255, 0.3);
+	background-color: var(--brand-color-highlight);
+}
+
+/*
+	DROPDOWN MENU
+ */
+
+.potiskarium-dropdown-menu,
+.potiskarium-dropdown-menu .dropdown-menu-checkbox {
+	display: none;
+}
+
+.potiskarium-dropdown-menu .potiskarium-dropdown-menu-button {
+	display: flex;
+	align-items: center;
+}
+
+.potiskarium-dropdown-menu .dropdown-menu-checkbox-label,
+.potiskarium-dropdown-menu .dropdown-menu-checkbox-label-close {
+	display: inline-block;
+	background-image: url('img/menu.svg');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	padding: 5px;
+}
+
+.potiskarium-dropdown-menu .potiskarium-dropdown-menu-header {
+	padding: 10px;
+}
+
+.potiskarium-dropdown-menu .dropdown-menu-checkbox-label-close {
+	background-image: url('img/close.svg');
+}
+
+.potiskarium-dropdown-menu .potiskarium-dropdown-menu-content {
+	position: fixed;
+	z-index: 999999;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	padding: 10px;
+	background-color: var(--brand-color);
+	overflow: auto;
+	transform: translateX(-100%);
+	transition: transform 0.5s ease;
+}
+
+.potiskarium-dropdown-menu .dropdown-menu-checkbox:checked + .potiskarium-dropdown-menu-content {
+	transform: translateX(0);
 }
 
 /*
@@ -270,6 +314,14 @@ button:focus {
 
 	.hide-on-mobile {
 		display: none;
+	}
+
+	.potiskarium-logo {
+		padding: 0 40px;
+	}
+
+	.potiskarium-dropdown-menu {
+		display: block;
 	}
 
 	header {
