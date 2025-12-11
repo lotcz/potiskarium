@@ -2,6 +2,6 @@
 
 interface PreviewInterface {
 
-	public function generatePreview(string $inputImagePath): string;
+	public function generatePreview(string $inputImagePath, string $prompt): string;
 
 }

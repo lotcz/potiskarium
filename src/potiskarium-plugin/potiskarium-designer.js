@@ -7,8 +7,11 @@ function potiskarium_designer_hide() {
 	if (existing) existing.remove();
 }
 
-async function potiskarium_designer_create_preview(customImage) {
-	const param = {customImage: customImage};
+async function potiskarium_designer_create_preview(customImage, productId) {
+	const param = {
+		customImage: customImage,
+		productId: productId,
+	};
 
 	const res = await fetch(PotiskariumDesigner.previewRestUrl, {
 		method: 'POST',
@@ -56,7 +59,9 @@ async function potiskarium_designer_save() {
 	const designer = potiskarium_designer_get();
 	const params = {
 		custom_image: designer.dataset.custom_image,
-		preview_image: designer.dataset.preview_image
+		preview_image: designer.dataset.preview_image,
+		product_id: designer.dataset.product_id,
+		item_key: designer.dataset.item_key
 	}
 	const value = JSON.stringify(params);
 
@@ -187,8 +192,9 @@ function potiskarium_designer_show(params) {
 				potiskarium_designer_set_custom_file(null);
 				const uploaded = await potiskarium_designer_upload_file(file);
 				potiskarium_designer_set_custom_file(uploaded.url);
+
 				potiskarium_designer_set_preview_image(null);
-				const generated = await potiskarium_designer_create_preview(uploaded.url);
+				const generated = await potiskarium_designer_create_preview(uploaded.url, params.product_id);
 				potiskarium_designer_set_preview_image(generated.url);
 			} catch (err) {
 				console.error(err);
@@ -254,18 +260,27 @@ function potiskarium_designer_show(params) {
 	}
 	if (params.preview_image) {
 		potiskarium_designer_set_preview_image(params.preview_image ? params.preview_image : '');
+	} else if (params.custom_image) {
+		potiskarium_designer_create_preview(params.custom_image, params.product_id)
+			.then((result) => potiskarium_designer_set_preview_image(result.url));
 	}
 	if (params.item_key) {
 		designer.dataset.item_key = params.item_key;
+	}
+	if (params.product_id) {
+		designer.dataset.product_id = params.product_id;
 	}
 }
 
 function potiskarium_designer_init() {
 	document.querySelectorAll(".potiskarium-designer-btn").forEach(
 		(btn) => {
+			const params = {
+				product_id: btn.dataset.product_id
+			};
 			btn.addEventListener(
 				"click",
-				() => potiskarium_designer_show({})
+				() => potiskarium_designer_show(params)
 			);
 		}
 	);

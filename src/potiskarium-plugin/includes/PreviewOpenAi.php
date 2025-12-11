@@ -5,14 +5,7 @@ require_once __DIR__ . '/PreviewBase.php';
 
 class PreviewOpenAi extends PreviewBase implements PreviewInterface {
 
-	function generatePreview(string $inputImagePath): string {
-
-		$prompt = "Create a high-resolution photorealistic mockup of a white ceramic mug on a plain white background. "
-		. "Apply the provided artwork (use the uploaded image as the design) centered on the front of the mug, "
-		. "scaled to cover approximately 60% of the mug's front face, preserving the original colors and transparency of the artwork. "
-		. "Show slight perspective (mug handle visible on the right), soft studio lighting, natural shadows on the table, "
-		. "and crisp edges. Make sure artwork looks printed (not floating) — include subtle gloss highlights from the mug surface. "
-		. "Return a single square PNG image (1024x1024) with transparent background if possible; otherwise white background.";
+	function generatePreview(string $inputImagePath, string $prompt): string {
 
 		// Call OpenAI Images Edit endpoint (multipart/form-data)
 		$openai_url = 'https://api.openai.com/v1/images/edits';

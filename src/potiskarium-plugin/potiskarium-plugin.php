@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Potiskarium Plugin
  * Description: Allows image uploads to certain product types and lets user generate AI preview
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Karel
  * Text Domain: potiskarium-plugin
  * Requires at least: 6.0
@@ -82,6 +82,63 @@ function product_supports_custom_print($product_id): bool {
  * PRODUCTS WITH PRINT IMAGE
  */
 
+add_filter('woocommerce_product_data_tabs', function ($tabs) {
+	global $post;
+
+	if ($post && product_supports_custom_print($post->ID)) {
+		$tabs['potiskarium_custom_tab'] = [
+			'label'    => __('Potiskarium', 'potiskarium-plugin'),
+			'target'   => 'potiskarium_custom_tab_data',
+			'class'    => [],
+			'priority' => 50,
+		];
+	}
+
+	return $tabs;
+});
+
+add_action(
+	'woocommerce_product_data_panels',
+	function () {
+		global $post;
+
+		// Condition: only show textarea for mugs
+		if (!product_supports_custom_print($post->ID)) {
+			return; // Do not render the panel at all
+		}
+		?>
+
+		<div id="potiskarium_custom_tab_data" class="panel woocommerce_options_panel">
+			<div class="options_group">
+				<?php
+				woocommerce_wp_textarea_input([
+					'id'          => '_potiskarium_product_prompt',
+					'label'       => __('AI Prompt', 'my-plugin'),
+					'description' => __('Enter custom text used later by the plugin.'),
+					'desc_tip'    => true,
+				]);
+				?>
+			</div>
+		</div>
+
+	<?php
+	}
+);
+
+add_action('woocommerce_admin_process_product_object', function ($product) {
+	if (isset($_POST['_potiskarium_product_prompt'])) {
+		$product->update_meta_data(
+			'_potiskarium_product_prompt',
+			wp_kses_post(wp_unslash($_POST['_potiskarium_product_prompt']))
+		);
+	}
+});
+
+function potiskarium_get_product_prompt($product_id) {
+	return get_post_meta($product_id, '_potiskarium_product_prompt', true);
+}
+
+
 if (!defined('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA')) {
 	define('POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA', 'potiskarium_uploaded_custom_item_data');
 }
@@ -92,9 +149,19 @@ add_action('woocommerce_before_add_to_cart_button', function() {
 	?>
 	<div class="custom-upload-wrapper">
     	<label for="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>">Obrázek pro vlastní potisk:</label>
-		<input type="hidden" name="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" id="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>" />
+		<input
+			type="hidden"
+			name="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>"
+			id="<?php echo POTISKARIUM_PLUGIN_CUSTOM_ITEM_DATA?>"
+		>
 		<div class="custom-upload-preview">
-			<button class="potiskarium-designer-btn wp-element-button" type="button">Nahrát vlastní obrázek...</button>
+			<button
+				class="potiskarium-designer-btn wp-element-button"
+				type="button"
+				data-product_id="<?php echo $product->get_id()?>"
+			>
+				Nahrát vlastní obrázek...
+			</button>
 		</div>
 	</div>
 	<?php
@@ -441,18 +508,27 @@ add_filter(
 
 function potiskarium_handle_preview(WP_REST_Request $request) {
 	$customImage = $request->get_param('customImage');
-
 	if (empty($customImage)) {
 		return new WP_REST_Response("No custom image specified!", 400);
 	}
 
+	$productId = $request->get_param('productId');
+	if (empty($productId)) {
+		return new WP_REST_Response("No product ID specified!", 400);
+	}
+
+	$prompt = potiskarium_get_product_prompt($productId);
+
 	$apiKey = get_option('potiskarium_api_key');
+	if (empty($apiKey)) {
+		return new WP_REST_Response("No API Key configured!", 400);
+	}
 
 	require_once __DIR__ . '/includes/PreviewOpenAi.php';
 	$previewApi = new PreviewOpenAi($apiKey);
 
 	try {
-		$preview_result = $previewApi->generatePreview($customImage);
+		$preview_result = $previewApi->generatePreview($customImage, $prompt);
 		return new WP_REST_Response(['url' => esc_url($preview_result)], 200);
 	} catch (\Exception $e) {
 		$message = 'API Error: ' . $e->getMessage();

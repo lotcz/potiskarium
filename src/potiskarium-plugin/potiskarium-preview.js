@@ -82,9 +82,7 @@ function potiskarium_preview_init() {
 		.forEach(
 			(element) => {
 				const url = element.dataset.product_detail_url;
-				console.log(url);
 				if (url) {
-					console.log('adding');
 					const button = document.createElement('button');
 					button.innerText = 'Zvolit vlastní potisk...';
 					button.classList.add('wp-element-button');
