@@ -29,6 +29,17 @@ function potiskarium_preview_show(params, element) {
 	customImageWrapper.appendChild(img);
 	img.addEventListener('click', async () => potiskarium_designer_show(params));
 
+	const previewImageWrapper = document.createElement('div');
+	previewImageWrapper.classList.add('preview-image-wrapper');
+	wrapper.appendChild(previewImageWrapper);
+
+	const pimg = document.createElement('img');
+	if (params.preview_image) {
+		pimg.setAttribute('src', params.preview_image);
+	}
+	previewImageWrapper.appendChild(pimg);
+	pimg.addEventListener('click', async () => potiskarium_designer_show(params));
+
 	const btn = document.createElement('button');
 	btn.setAttribute('type', 'button');
 	btn.classList.add('wp-element-button');

@@ -203,6 +203,15 @@ add_action(
 				'permission_callback' => '__return_true',
 			]
 		);
+		register_rest_route(
+			'potiskarium-plugin/v1',
+			'/preview',
+			[
+				'methods' => 'POST',
+				'callback' => 'potiskarium_handle_preview',
+				'permission_callback' => '__return_true',
+			]
+		);
 	}
 );
 
@@ -241,7 +250,8 @@ function potiskarium_handle_upload(WP_REST_Request $request) {
 		'image/jpeg',
 		'image/png',
 		'image/gif',
-		'image/webp'
+		'image/webp',
+		'image/svg'
 	];
 
 	if (!in_array($file['type'], $allowed_types)) {
@@ -340,6 +350,7 @@ add_action(
 			'PotiskariumDesigner',
 			[
 				'uploadRestUrl' => rest_url('potiskarium-plugin/v1/image'),
+				'previewRestUrl' => rest_url('potiskarium-plugin/v1/preview'),
 				'uploadNonce' => wp_create_nonce('potiskarium_upload_nonce')
 			]
 		);
@@ -355,4 +366,97 @@ add_action(
 	}
 );
 
+/*
+ * AI PREVIEW
+ */
 
+add_action(
+	'admin_menu',
+	function () {
+		add_options_page(
+			'Potiskarium AI Preview Settings',
+			'Potiskarium AI',
+			'manage_options',
+			'potiskarium-settings',
+			'potiskarium_settings_page'
+		);
+	}
+);
+
+add_action(
+	'admin_init',
+	function () {
+
+		// Register an option
+		register_setting('potiskarium_settings_group', 'potiskarium_api_key');
+
+		// Add a section
+		add_settings_section(
+			'potiskarium_main_section',
+			'Main Settings',
+			function () {
+				echo '<p>Configure my plugin behavior.</p>';
+			},
+			'potiskarium-settings'
+		);
+
+		// Add a field
+		add_settings_field(
+			'potiskarium_api_key',
+			'API Key',
+			function () {
+				$value = get_option('potiskarium_api_key', '');
+				echo '<input type="text" name="potiskarium_api_key" value="' . esc_attr($value) . '" class="regular-text">';
+			},
+			'potiskarium-settings',
+			'potiskarium_main_section'
+		);
+	}
+);
+
+function potiskarium_settings_page() {
+	?>
+	<div class="wrap">
+		<h1>Potiskarium AI Settings</h1>
+
+		<form method="post" action="options.php">
+			<?php
+			settings_fields('potiskarium_settings_group');
+			do_settings_sections('potiskarium-settings');
+			submit_button();
+			?>
+		</form>
+	</div>
+	<?php
+}
+
+add_filter(
+	'plugin_action_links_potiskarium-plugin/potiskarium-plugin.php',
+	function ($links) {
+		$settings_link = '<a href="options-general.php?page=potiskarium-settings">Settings</a>';
+		array_unshift($links, $settings_link);
+		return $links;
+	}
+);
+
+function potiskarium_handle_preview(WP_REST_Request $request) {
+	$customImage = $request->get_param('customImage');
+
+	if (empty($customImage)) {
+		return new WP_REST_Response("No custom image specified!", 400);
+	}
+
+	$apiKey = get_option('potiskarium_api_key');
+
+	require_once __DIR__ . '/includes/PreviewOpenAi.php';
+	$previewApi = new PreviewOpenAi($apiKey);
+
+	try {
+		$preview_result = $previewApi->generatePreview($customImage);
+		return new WP_REST_Response(['url' => esc_url($preview_result)], 200);
+	} catch (\Exception $e) {
+		$message = 'API Error: ' . $e->getMessage();
+		error_log($message);
+		return new WP_REST_Response($message, 500);
+	}
+}

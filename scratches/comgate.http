@@ -1,4 +1,4 @@
-GET https://payments.comgate.cz/v2.0/payment/0ATR-SDZX-GWPQ.json
+GET https://payments.comgate.cz/v2.0/payment/transId/0ATR-SDZX-GWPQ.json
 Accept: application/json
 Content-Type: application/json
-Authorization: Basic NTAzNTcyOk5EZW1ibFM4YUpyOGR2dVdVRmxROU5YbFBOakxoTXcy
+Authorization: Basic {{comgate_auth}}

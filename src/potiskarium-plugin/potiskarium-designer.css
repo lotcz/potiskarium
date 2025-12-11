@@ -24,7 +24,8 @@
 	flex-wrap: wrap;
 }
 
-.potiskarium-design-preview .custom-image-wrapper {
+.potiskarium-design-preview .custom-image-wrapper,
+.potiskarium-design-preview .preview-image-wrapper {
 	max-width: 100px;
 	height: 50px;
 	display: flex;
@@ -33,7 +34,8 @@
 	overflow: hidden;
 }
 
-.potiskarium-design-preview .custom-image-wrapper img {
+.potiskarium-design-preview .custom-image-wrapper img,
+.potiskarium-design-preview .preview-image-wrapper img {
 	max-width: 100%;
 	max-height: 100%;
 }
@@ -87,6 +89,12 @@
 	align-items: stretch;
 	gap: 1rem;
 	min-height: 0;
+}
+
+
+#potiskarium_designer .designer-custom-image input {
+	max-width: 300px;
+	overflow: hidden;
 }
 
 #potiskarium_designer .designer-custom-image-wrapper,

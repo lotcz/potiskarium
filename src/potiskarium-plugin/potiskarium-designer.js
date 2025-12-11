@@ -7,6 +7,27 @@ function potiskarium_designer_hide() {
 	if (existing) existing.remove();
 }
 
+async function potiskarium_designer_create_preview(customImage) {
+	const param = {customImage: customImage};
+
+	const res = await fetch(PotiskariumDesigner.previewRestUrl, {
+		method: 'POST',
+		credentials: "same-origin",
+		headers: {
+			'Content-Type': 'application/json',
+			'Nonce': PotiskariumDesigner.uploadNonce
+		},
+		body: JSON.stringify(param)
+	});
+
+	if (!res.ok) {
+		const err = await res.text();
+		throw new Error('Preview failed: ' + err);
+	}
+
+	return await res.json();
+}
+
 async function potiskarium_designer_upload_file(file) {
 	const formData = new FormData();
 	formData.append('file', file);
@@ -86,6 +107,27 @@ function potiskarium_designer_set_custom_file(url) {
 	designer.dataset.custom_image = url;
 }
 
+function potiskarium_designer_set_preview_image(url) {
+	const designer = potiskarium_designer_get();
+	if (!designer) return;
+
+	const previewImageWrapper = designer.querySelector('.designer-preview-image-wrapper');
+	previewImageWrapper.innerHTML = '';
+
+	if (url === null) {
+		const loading = document.createElement('div');
+		loading.classList.add('loading');
+		loading.innerText = 'Generuji náhled...';
+		previewImageWrapper.appendChild(loading);
+	} else if (url.length > 0) {
+		const img = document.createElement('img');
+		previewImageWrapper.appendChild(img);
+		img.setAttribute('src', url);
+	}
+
+	designer.dataset.preview_image = url;
+}
+
 function potiskarium_designer_show(params) {
 	potiskarium_designer_hide();
 
@@ -145,6 +187,9 @@ function potiskarium_designer_show(params) {
 				potiskarium_designer_set_custom_file(null);
 				const uploaded = await potiskarium_designer_upload_file(file);
 				potiskarium_designer_set_custom_file(uploaded.url);
+				potiskarium_designer_set_preview_image(null);
+				const generated = await potiskarium_designer_create_preview(uploaded.url);
+				potiskarium_designer_set_preview_image(generated.url);
 			} catch (err) {
 				console.error(err);
 			}
@@ -206,6 +251,9 @@ function potiskarium_designer_show(params) {
 
 	if (params.custom_image) {
 		potiskarium_designer_set_custom_file(params.custom_image ? params.custom_image : '');
+	}
+	if (params.preview_image) {
+		potiskarium_designer_set_preview_image(params.preview_image ? params.preview_image : '');
 	}
 	if (params.item_key) {
 		designer.dataset.item_key = params.item_key;
