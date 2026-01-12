@@ -52,11 +52,12 @@ registerBlockType('comgate-plugin/footer-logos-block', {
 		const { variant } = attributes;
 
 		return <div {...blockProps}>
-			<img
-				style={{ maxWidth: '100%' }}
-				src={comgateFooterLogosUrl(variant)}
-				alt="Comgate"
-			/>
+			<div className="comgate-plugin-logos-block">
+				<img
+					src={comgateFooterLogosUrl(variant)}
+					alt="Comgate"
+				/>
+			</div>
 		</div>;
 	},
 } );

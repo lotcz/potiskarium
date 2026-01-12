@@ -524,6 +524,11 @@ function potiskarium_handle_preview(WP_REST_Request $request) {
 		return new WP_REST_Response("No API Key configured!", 400);
 	}
 
+	/*
+	require_once __DIR__ . '/includes/PreviewNanoBanana.php';
+	$previewApi = new PreviewNanoBanana($apiKey);
+	 */
+
 	require_once __DIR__ . '/includes/PreviewOpenAi.php';
 	$previewApi = new PreviewOpenAi($apiKey);
 

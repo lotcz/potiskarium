@@ -124,10 +124,15 @@ function potiskarium_designer_set_preview_image(url) {
 		loading.classList.add('loading');
 		loading.innerText = 'Generuji náhled...';
 		previewImageWrapper.appendChild(loading);
-	} else if (url.length > 0) {
+	} else if (url.length > 0 && url.startsWith('http')) {
 		const img = document.createElement('img');
 		previewImageWrapper.appendChild(img);
 		img.setAttribute('src', url);
+	} else {
+		const err = document.createElement('div');
+		err.classList.add('error');
+		err.innerText = 'Jejda, něco se pokazilo. Ani umělá inteligence není dokonalá...';
+		previewImageWrapper.appendChild(err);
 	}
 
 	designer.dataset.preview_image = url;
@@ -198,6 +203,7 @@ function potiskarium_designer_show(params) {
 				potiskarium_designer_set_preview_image(generated.url);
 			} catch (err) {
 				console.error(err);
+				potiskarium_designer_set_preview_image(err);
 			}
 		}
 	);

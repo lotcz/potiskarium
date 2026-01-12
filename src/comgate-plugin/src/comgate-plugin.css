@@ -8,3 +8,12 @@
 .wc-block-checkout__payment-method .wc-block-components-radio-control-accordion-option .wc-block-components-radio-control__label img {
 	height: 15px;
 }
+
+.comgate-plugin-logos-block {
+	text-align: center;
+}
+
+.comgate-plugin-logos-block img {
+	max-width: 100%;
+	margin: auto;
+}

@@ -15,6 +15,13 @@
 	--secondary-brand-color-highlight: #b378c6;
 }
 
+/* italic menus */
+.product-categories-menu a,
+.collapsible-categories-menu a {
+	font-family: Cardo, serif;
+	font-weight: bold;
+}
+
 .wp-block-potiskarium-theme-logo-block {
 	display: flex;
 	align-items: center;
@@ -77,6 +84,10 @@ button:focus {
 	background-color: var(--brand-color-highlight) !important;
 }
 
+.woocommerce-MyAccount-navigation-link--downloads {
+	display: none;
+}
+
 /* PRODUCT LISTING */
 
 .wc-block-components-product-image img {
@@ -97,7 +108,6 @@ button:focus {
 	list-style-type: none;
 	display: flex;
 }
-
 
 .product-categories-menu li.active > a {
 	font-weight: bold;
