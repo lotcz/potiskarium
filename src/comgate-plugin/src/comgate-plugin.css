@@ -1,0 +1,10 @@
+.comgate-payment-label-images {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+}
+
+.comgate-payment-label-images img,
+.wc-block-checkout__payment-method .wc-block-components-radio-control-accordion-option .wc-block-components-radio-control__label img {
+	height: 15px;
+}

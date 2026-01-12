@@ -5,10 +5,19 @@ const { useState } = wp.element;
 
 // Get settings from PHP
 const settings = getSetting('karel_comgate_plugin_payment_data', {});
-const defaultLabel = decodeEntities(settings.title) || 'Online Payment';
-const description = decodeEntities(settings.description) || 'You will be redirected to a secure payment gateway to complete the payment.';
-
 const imagesUrl = window.KarelComgatePluginData ? window.KarelComgatePluginData.pluginUrl + 'img/' : '';
+
+const defaultLabel = decodeEntities(settings.title) || 'Online Payment';
+const imageLabel = <div>
+	<div className="comgate-payment-label-images">
+		<div>{defaultLabel}</div>
+		<img src={imagesUrl + 'visa.png'} alt="VISA"/>
+		<img src={imagesUrl + 'mastercard.png'} alt="Mastercard"/>
+		<img src={imagesUrl + 'apple-pay.png'} alt="Apple Pay"/>
+		<img src={imagesUrl + 'google-pay.png'} alt="Google Pay"/>
+	</div>
+</div>
+const description = decodeEntities(settings.description) || 'You will be redirected to a secure payment gateway to complete the payment.';
 
 const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 	const [isProcessing, setIsProcessing] = useState(false);
@@ -35,15 +44,9 @@ const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 
 	return (
 		<div>
-			<div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
-				<img src={imagesUrl + 'visa.png'} alt="VISA"/>
-				<img src={imagesUrl + 'mastercard.png'} alt="Mastercard"/>
-				<img src={imagesUrl + 'apple-pay.png'} alt="Apple Pay"/>
-				<img src={imagesUrl + 'google-pay.png'} alt="Google Pay"/>
-			</div>
 			<p>{description}</p>
 			{isProcessing && (
-				<div><span>Preparing payment...</span></div>
+				<div><span>Přesměrovávám na platební bránu...</span></div>
 			)}
 		</div>
 	);
@@ -51,7 +54,7 @@ const ComgatePayment = ({ eventRegistration, emitResponse }) => {
 
 registerPaymentMethod({
 	name: 'karel_comgate_plugin_payment',
-	label: defaultLabel,
+	label: imageLabel,
 	ariaLabel: defaultLabel,
 	content: <ComgatePayment />,
 	edit: <ComgatePayment />,

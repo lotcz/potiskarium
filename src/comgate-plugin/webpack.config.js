@@ -17,6 +17,10 @@ module.exports = {
 					to: 'languages/[name][ext]'
 				},
 				{
+					from: 'src/comgate-plugin.css',
+					to: '[name][ext]'
+				},
+				{
 					from: 'src/img/*',
 					to: 'img/[name][ext]'
 				}
