@@ -67,6 +67,10 @@ button:focus {
 	flex: 1;
 }
 
+.flex-nowrap {
+	flex-wrap: nowrap;
+}
+
 .wp-element-button,
 .wp-block-button__link,
 .wp-block-button.wc-block-components-product-button .wc-block-components-product-button__button,
@@ -139,6 +143,7 @@ button:focus {
 /* COLLAPSIBLE MENU */
 
 .collapsible-categories-menu {
+	width: 330px;
 	margin: 0;
 	font-size: 120%;
 }
@@ -318,6 +323,14 @@ button:focus {
 /*
 	RESPONSIVENESS
  */
+
+/* Medium devices */
+@media (max-width: 1000px) {
+
+	.collapsible-categories-menu {
+		width: auto !important;
+	}
+}
 
 /* Small devices */
 @media (max-width: 768.98px) {
