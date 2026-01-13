@@ -1,0 +1,26 @@
+{
+	"apiVersion": 3,
+	"name": "potiskarium-theme/categories-slider-block",
+	"title": "Woocommerce Categories Slider",
+	"category": "potiskarium-theme-blocks",
+	"icon": "list-view",
+	"editorScript": "file:./editor.js",
+	"render": "file:./index.php",
+	"attributes": {
+		"hideEmpty": {
+			"type": "boolean",
+			"default": true
+		},
+		"hideDefault": {
+			"type": "boolean",
+			"default": true
+		},
+		"showDefaultLast": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false
+	}
+}

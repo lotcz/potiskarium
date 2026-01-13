@@ -321,6 +321,35 @@ button:focus {
 }
 
 /*
+	SLIDER
+ */
+
+.product-categories-slider {
+	overflow: hidden;
+}
+
+.product-categories-slider .product-categories-slider-inner {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: nowrap;
+}
+
+.product-categories-slider-inner .product-category-item {
+	position: relative;
+	width: 50%;
+	height: 400px;
+}
+
+.product-categories-slider-inner .product-category-item .product-category-label {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
+}
+
+/*
 	RESPONSIVENESS
  */
 
