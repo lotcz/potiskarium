@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cancel-order-request-woocommerce\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Domain: cancel-order-request-woocommerce\n"
+
+msgid "Cancel Request"
+msgstr ""
+
+msgid "Request to cancel order #%s"
+msgstr ""
+
+msgid "Reason for order canceling"
+msgstr ""
+
+msgid "Send Cancellation Request"
+msgstr ""
+
+msgid "Order cancellation request submitted for order no. #%s"
+msgstr ""

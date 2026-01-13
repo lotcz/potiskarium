@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Potiskarium Plugin
  * Description: Allows image uploads to certain product types and lets user generate AI preview
- * Version: 1.2.0
+ * Version: 1.2.2
  * Author: Karel
  * Text Domain: potiskarium-plugin
  * Requires at least: 6.0
@@ -20,6 +20,17 @@ add_action( 'before_woocommerce_init', function() {
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 	}
 });
+
+/* TRANSLATIONS */
+add_action(
+	'plugins_loaded',
+	function () {
+		load_textdomain(
+			'cancel-order-request-woocommerce',
+			plugin_dir_path(__FILE__) . '/languages/cancel-order-request/cancel-order-request-cs_CZ.mo'
+		);
+	}
+);
 
 /*
  *	CATEGORY WITH CUSTOM IMAGE

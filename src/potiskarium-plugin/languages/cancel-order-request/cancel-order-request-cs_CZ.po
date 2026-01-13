@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cancel-order-request-woocommerce\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-01-13 18:37+0100\n"
+"Last-Translator: karel\n"
+"Language-Team: karel\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Cancel Request"
+msgstr "Odstoupit od smlouvy"
+
+msgid "Request to cancel order #%s"
+msgstr "Odstoupit od objednávky č. %s"
+
+msgid "Reason for order canceling"
+msgstr "Důvod odstoupení od smlouvy"
+
+msgid "Send Cancellation Request"
+msgstr "Odeslat požadavek na odstoupení od smlouvy"
+
+msgid "Order cancellation request submitted for order no. #%s"
+msgstr "Požadavek na odstoupení od smlouvy odeslán pro objednávku č. %s"

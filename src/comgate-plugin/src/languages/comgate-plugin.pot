@@ -36,3 +36,6 @@ msgstr ""
 
 msgid "PAID"
 msgstr ""
+
+msgid "Cancel Request"
+msgstr ""

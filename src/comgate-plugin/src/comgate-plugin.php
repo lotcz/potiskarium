@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ComGate Gateway
  * Description: Simple ComGate payment gateway for WooCommerce
- * Version: 2.1.4
+ * Version: 2.1.5
  * Author: Karel
  * Text Domain: karel-comgate-gateway
  * Requires at least: 6.0
