@@ -347,7 +347,8 @@ button:focus {
 
 .product-categories-slider-content .product-category-item {
 	position: relative;
-	width: 50%;
+	text-decoration: none;
+	width: 400px;
 	height: 400px;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -361,12 +362,23 @@ button:focus {
 	color: white;
 	text-align: center;
 	padding: 1rem;
-	background-image: linear-gradient(180deg, rgba(0,0,0,0.6) 90%, rgba(0,0,0,0) 100%);
+	margin: 1rem;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--brand-color);
+}
+
+
+.product-categories-slider-content .product-category-item:hover .product-category-label {
+	margin-top: 0.8rem;
 }
 
 .product-categories-slider-view .product-category-item .product-category-label h3 {
 	color: white;
-	padding: 1rem 0 1rem 0;
+	padding: 0;
 	margin: 0;
 }
 

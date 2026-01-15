@@ -21,7 +21,7 @@
 			>
 				<div class="product-category-label" >
 					<h3><?php echo esc_html($category->name) ?></h3>
-					<?php echo esc_html($category->description) ?>
+					<?php /*echo esc_html($category->description) */?>
 				</div>
 			</a>
 		<?php
