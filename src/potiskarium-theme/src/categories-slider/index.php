@@ -20,8 +20,7 @@
 				style="background-image:url('<?php echo $img_url ?>')"
 			>
 				<div class="product-category-label" >
-					<h3><?php echo esc_html($category->name) ?></h3>
-					<?php /*echo esc_html($category->description) */?>
+					<h4><?php echo esc_html($category->name) ?></h4>
 				</div>
 			</a>
 		<?php
