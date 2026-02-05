@@ -1,13 +1,7 @@
 FUNC
 
-- formulář na vlastní potisk
-  - AI preview
-
-NEEDED INFO
-
-- obchodni adresa
-- DPH?
-- https://www.comgate.cz/#poptavka-hp
+- DEPLOY
+- CONFIG
 
 2.0
 
