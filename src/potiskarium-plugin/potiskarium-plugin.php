@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Potiskarium Plugin
  * Description: Allows image uploads to certain product types and lets user generate AI preview
- * Version: 1.2.2
+ * Version: 2.0.0
  * Author: Karel
  * Text Domain: potiskarium-plugin
  * Requires at least: 6.0
