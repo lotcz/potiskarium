@@ -94,7 +94,7 @@ function potiskarium_designer_show(params) {
 
 	/* IFRAME */
 
-	const iframe = document.createElement('iframe');
+	let is_valid = true;
 	let mm_url = params.mm_url;
 	if (PotiskariumDesigner && !mm_url) {
 		mm_url = PotiskariumDesigner.mmUrl;
@@ -107,6 +107,7 @@ function potiskarium_designer_show(params) {
 			mm_url += `/designer/add/${params.mm_product_id}`;
 		} else {
 			wrapper.innerText = 'No UUID or product id!';
+			is_valid = false;
 		}
 		mm_url += `?parent_origin=${window.location.origin}`;
 		if (params.read_only) {
@@ -115,12 +116,16 @@ function potiskarium_designer_show(params) {
 		if (params.admin) {
 			mm_url += '&admin=1';
 		}
-		iframe.setAttribute('src', mm_url);
 	} else {
 		wrapper.innerText = 'No Merch Master URL!';
+		is_valid = false;
 	}
 
-	wrapper.appendChild(iframe);
+	if (is_valid) {
+		const iframe = document.createElement('iframe');
+		iframe.setAttribute('src', mm_url);
+		wrapper.appendChild(iframe);
+	}
 
 	if (params.item_key) {
 		designer.dataset.item_key = params.item_key;

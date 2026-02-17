@@ -38,7 +38,7 @@ class CategoryTree {
 		if ($all === null) {
 			$all = get_terms(array(
 				'taxonomy' => 'product_cat',
-				'orderby' => 'name',
+				'orderby' => 'menu_order',
 				'order' => 'ASC',
 				'hide_empty' => false
 			));
