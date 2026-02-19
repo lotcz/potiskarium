@@ -15,6 +15,45 @@
 	--secondary-brand-color-highlight: #b378c6;
 }
 
+.wc-block-product {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.wc-block-product .wc-block-components-product-button {
+	flex-grow: 1;
+	justify-content: end;
+}
+
+.wc-block-product .wc-block-components-product-button .wp-element-button {
+	height: auto;
+	margin-bottom: 1rem;
+}
+
+figure.wp-block-woocommerce-product-specifications {
+	margin-block-start: 10px;
+}
+
+.wp-block-woocommerce-product-specifications table {
+	display: flex;
+}
+
+.wp-block-product-specifications-item td,
+.wp-block-product-specifications-item th {
+	border: none;
+	padding: 10px;
+	line-height: 1;
+}
+
+.wp-block-product-specifications-item td p {
+	margin: 0;
+}
+
+.wp-block-product-specifications-item th {
+	text-wrap: nowrap;
+}
+
 /* italic menus */
 .product-categories-menu a,
 .collapsible-categories-menu a {
