@@ -27,7 +27,7 @@ class CategoryTree {
 		$this->activeCategoryId = $activeCategoryId;
 
 		if ($this->activeCategoryId === null) {
-			if (is_product_category()) {
+			if (function_exists('is_product_category') && is_product_category()) {
 				$current = get_queried_object();
 				$this->activeCategoryId = $current->term_id;
 			} else {
@@ -42,6 +42,11 @@ class CategoryTree {
 				'order' => 'ASC',
 				'hide_empty' => false
 			));
+			if ($all instanceof \WP_Error) {
+				error_log($all->get_error_message());
+
+				$all = [];
+			}
 		}
 
 		$childrenCategories = array_filter($all, fn ($subcategory) => $subcategory->parent == $parentId);
